@@ -9,6 +9,10 @@ export async function before(m, { conn, participants, groupMetadata }) {
   let chat = global.db.data.chats[m.chat]
   let defaultImage = 'https://files.catbox.moe/xr2m6u.jpg';
 
+  // Asegúrate de que global.welcom1 y global.welcom2 estén definidos
+  let welcomeMessage = global.welcom1 || '¡Bienvenido al grupo!'
+  let goodbyeMessage = global.welcom2 || '¡Te extrañaremos!'
+
   if (chat.welcome) {
     let img;
     try {
@@ -19,12 +23,10 @@ export async function before(m, { conn, participants, groupMetadata }) {
     }
 
     if (m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_ADD) {
-      let bienvenida = `✦ *Bienvenido* a ${groupMetadata.subject}\n ✰ ${taguser}\n${global.welcom1}\n •(=^●ω●^=)• Disfruta tu estadía en el grupo!\n> ✐ Puedes usar *#help* para ver la lista de comandos.`
-      // Solo enviar texto, sin imagen
+      let bienvenida = `✦ *Bienvenido* a ${groupMetadata.subject}\n ✰ ${taguser}\n${welcomeMessage}\n •(=^●ω●^=)• Disfruta tu estadía en el grupo!\n> ✐ Puedes usar *#help* para ver la lista de comandos.`
       await conn.sendMessage(m.chat, { text: bienvenida, mentions: [who] })
     } else if (m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_REMOVE || m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_LEAVE) {
-      let bye = `✦ *Adiós* De ${groupMetadata.subject}\n ✰ ${taguser}\n${global.welcom2}\n •(=^●ω●^=)• Te esperamos pronto!\n> ✐ Puedes usar *#help* para ver la lista de comandos.`
-      // Solo enviar texto, sin imagen
+      let bye = `✦ *Adiós* De ${groupMetadata.subject}\n ✰ ${taguser}\n${goodbyeMessage}\n •(=^●ω●^=)• Te esperamos pronto!\n> ✐ Puedes usar *#help* para ver la lista de comandos.`
       await conn.sendMessage(m.chat, { text: bye, mentions: [who] })
     }
   }
