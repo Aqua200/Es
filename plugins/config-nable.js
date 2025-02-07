@@ -42,17 +42,6 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       bot.restrict = isEnable
       break
 
- case 'autolevelup':
-    case 'autonivel':
-      if (m.isGroup) {
-        if (!(isAdmin || isOwner)) {
-          global.dfail('admin', m, conn)
-          throw false
-        }
-      }
-      chat.autolevelup = isEnable
-      break
-
  case 'antibot':
     case 'antibots':
       if (m.isGroup) {
@@ -62,28 +51,6 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
         }
       }
       chat.antiBot = isEnable
-      break
-
- case 'autoaceptar':
-    case 'aceptarauto':
-      if (m.isGroup) {
-        if (!(isAdmin || isOwner)) {
-          global.dfail('admin', m, conn)
-          throw false
-        }
-      }
-      chat.autoAceptar = isEnable
-      break
-
- case 'autorechazar':
-    case 'rechazarauto':
-      if (m.isGroup) {
-        if (!(isAdmin || isOwner)) {
-          global.dfail('admin', m, conn)
-          throw false
-        }
-      }
-      chat.autoRechazar = isEnable
       break
 
  case 'antisubbots':
@@ -101,27 +68,15 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
 
  case 'antifake':
     case 'antifakes':
+    case 'antiarabes':
+    case 'antiarab':
       if (m.isGroup) {
         if (!(isAdmin || isOwner)) {
           global.dfail('admin', m, conn)
           throw false
         }
       }
-      chat.antifake = isEnable
-      break
-
-  case 'autoresponder':
-    case 'autorespond':
-      if (!m.isGroup) {
-        if (!isOwner) {
-          global.dfail('group', m, conn)
-          throw false
-        }
-      } else if (!isAdmin) {
-        global.dfail('admin', m, conn)
-        throw false
-      }
-      chat.autoresponder = isEnable
+      chat.onlyLatinos = isEnable
       break
 
  case 'modoadmin':
@@ -202,13 +157,13 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       bot.antiSpam = isEnable
       break
 
-  case 'antidelete': 
-    case 'antieliminar': 
-    case 'delete':
-     if (m.isGroup) {
-     if (!(isAdmin || isOwner)) {
-     global.dfail('admin', m, conn)
-     throw false
+   case 'antidelete': 
+     case 'antieliminar': 
+     case 'delete':
+      if (m.isGroup) {
+        if (!(isAdmin || isOwner)) {
+       global.dfail('admin', m, conn)
+       throw false
      }}
      chat.delete = isEnable
      break
@@ -280,48 +235,26 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       }
       chat.antiLink = isEnable
       break
-
-      case 'nsfw':
-      case 'modohorny':
-       if (m.isGroup) {
-         if (!(isAdmin || isOwner)) {
-           global.dfail('admin', m, conn)
-            throw false
-           }}
-    chat.modohorny = isEnable          
-    break
     default:
       if (!/[01]/.test(command)) return conn.reply(m.chat, `
-*👑 Funciones solo para owner*
+*ゲ◜៹ Bot Creadores ៹◞ゲ*
 
 ${usedPrefix + command} antispam
 ${usedPrefix + command} antiprivado
 ${usedPrefix + command} status
-${usedPrefix + command} autoread
 ${usedPrefix + command} restrict
 
-*🚩 Funciones de grupos*
+*ゲ◜៹ Bot Administrador ៹◞ゲ*
 
 ${usedPrefix + command} welcome 
-${usedPrefix + command} autoaceptar
-${usedPrefix + command} autorechazar
-${usedPrefix + command} autoresponder
-${usedPrefix + command} autolevelup
 ${usedPrefix + command} antibot
-${usedPrefix + command} subbots
 ${usedPrefix + command} reaccion
-${usedPrefix + command} simi
-${usedPrefix + command} audios
-${usedPrefix + command} antiver
-${usedPrefix + command} detect 
-${usedPrefix + command} delete
-${usedPrefix + command} nsfw 
-${usedPrefix + command} modoadmin 
-${usedPrefix + command} antifake
-${usedPrefix + command} antilink`, m, rcanal)
+${usedPrefix + command} simi  
+${usedPrefix + command} modoadmin  
+${usedPrefix + command} antilink`, m)
       throw false
   }
-  conn.reply(m.chat, `🚩 La función *${type}* se *${isEnable ? 'activó' : 'desactivó'}* ${isAll ? 'para este Bot' : isUser ? '' : 'para este chat'}`, m, rcanal)
+  conn.reply(m.chat, `🍭 La función *${type}* se *${isEnable ? 'activó' : 'desactivó'}* ${isAll ? 'para este Bot' : isUser ? '' : 'para este chat'}`, m)
 }
 
 handler.help = ['enable', 'disable']
