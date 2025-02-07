@@ -26,7 +26,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
     if (m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_ADD) {
       let bienvenida = `🌸 *Bienvenido* a ${groupMetadata.subject}\n ✨ ${taguser}\n${welcomeMessage}\n •(=^●ω●^=)• ¡Disfruta mucho de tu estadía y no dudes en interactuar!\n> ✐ Usa *#help* para conocer todos los comandos disponibles.`
       await conn.sendMessage(m.chat, { text: bienvenida, mentions: [who] })
-    } else if (m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_REMOVE || m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_LEAVE) {
+    } else if (m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_LEAVE) {
       let bye = `🌙 *Adiós* de ${groupMetadata.subject}\n ✨ ${taguser}\n${goodbyeMessage}\n •(=^●ω●^=)• ¡Te esperamos con los brazos abiertos la próxima vez!\n> ✐ No olvides que puedes usar *#help* para ver todos los comandos cuando regreses.`
       await conn.sendMessage(m.chat, { text: bye, mentions: [who] })
     } else if (m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_KICK) {
