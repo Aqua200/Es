@@ -7,9 +7,9 @@ let img = catalogo
     contextInfo: {
     	isForwarded: true,
     forwardedNewsletterMessageInfo: {
-      newsletterJid: "120363299667225383@newsletter",
+      newsletterJid: "",
       serverMessageId: 100,
-      newsletterName: '「  𝑺𝑰𝑺𝑲𝑬𝑫 - 𝑪𝑯𝑨𝑵𝑬𝑳  」',
+      newsletterName: '「  Anika-News  」',
     },
 	    externalAdReply: {
 				    showAdAttribution: true,
@@ -50,17 +50,17 @@ global.rcanal = {
 contextInfo: {
 isForwarded: true,
 forwardedNewsletterMessageInfo: {
-newsletterJid: "120363299667225383@newsletter",
+newsletterJid: "",
 serverMessageId: 100,
-newsletterName: '「  𝑺𝑰𝑺𝑲𝑬𝑫 - 𝑪𝑯𝑨𝑵𝑬𝑳  」',
+newsletterName: '「  Anika-news  」',
 },
 externalAdReply: { 
 showAdAttribution: true,
-title: '𝙎𝙄𝙎𝙆𝙀𝘿 𝘽𝙊𝙏 ',
-body: '@Sisked Good',
+title: 'Anika ',
+body: 'Anika para servirle',
 previewType: "PHOTO",
 thumbnailUrl: 'https://qu.ax/sKZrP.jpg',
-sourceUrl: 'https://www.instagram.com/sisked_1',
+sourceUrl: '',
 mediaType: 1,
 renderLargerThumbnail: false
 },},}
