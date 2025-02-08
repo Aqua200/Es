@@ -1,9 +1,14 @@
-let WAMessageStubType = (await import('@whiskeysockets/baileys')).default
+import path from 'path';  // Agregar la importación de 'path'
+let WAMessageStubType = (await import('@whiskeysockets/baileys')).default;
 import { promises as fs, readdirSync, unlinkSync, existsSync } from 'fs';
 
+async function sendResponse(chatId, message, mentions = []) {
+  await conn.sendMessage(chatId, { text: message, mentions: mentions }, { quoted: fkontak });
+}
+
 export async function before(m, { conn, participants, groupMetadata }) {
-  if (!m.messageStubType || !m.isGroup) return
-  
+  if (!m.messageStubType || !m.isGroup) return;
+
   const fkontak = {
     "key": { 
       "participants": "0@s.whatsapp.net", 
@@ -36,35 +41,34 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
   // Detectar cambios en el grupo
   if (chat.detect && m.messageStubType == 21) {
-    await conn.sendMessage(m.chat, { text: nombre, mentions: [m.sender] }, { quoted: fkontak });
+    await sendResponse(m.chat, nombre, [m.sender]);
 
   } else if (chat.detect && m.messageStubType == 22) {
     await conn.sendMessage(m.chat, { image: { url: pp }, caption: foto, mentions: [m.sender] }, { quoted: fkontak });
 
   } else if (chat.detect && m.messageStubType == 23) {
-    await conn.sendMessage(m.chat, { text: newlink, mentions: [m.sender] }, { quoted: fkontak });
+    await sendResponse(m.chat, newlink, [m.sender]);
 
   } else if (chat.detect && m.messageStubType == 25) {
-    await conn.sendMessage(m.chat, { text: edit, mentions: [m.sender] }, { quoted: fkontak });
+    await sendResponse(m.chat, edit, [m.sender]);
 
   } else if (chat.detect && m.messageStubType == 26) {
-    await conn.sendMessage(m.chat, { text: status, mentions: [m.sender] }, { quoted: fkontak });
+    await sendResponse(m.chat, status, [m.sender]);
 
   } else if (chat.detect2 && m.messageStubType == 27) {
-    await conn.sendMessage(m.chat, { text: aceptar, mentions: [`${m.sender}`, `${m.messageStubParameters[0]}`] }, { quoted: fkontak });
+    await sendResponse(m.chat, aceptar, [`${m.sender}`, `${m.messageStubParameters[0]}`]);
 
   } else if (chat.detect && m.messageStubType == 29) {
-    await conn.sendMessage(m.chat, { text: admingp, mentions: [`${m.sender}`,`${m.messageStubParameters[0]}`] }, { quoted: fkontak });
-    return;
+    await sendResponse(m.chat, admingp, [`${m.sender}`,`${m.messageStubParameters[0]}`]);
 
   } else if (chat.detect && m.messageStubType == 30) {
-    await conn.sendMessage(m.chat, { text: noadmingp, mentions: [`${m.sender}`,`${m.messageStubParameters[0]}`] }, { quoted: fkontak });
+    await sendResponse(m.chat, noadmingp, [`${m.sender}`,`${m.messageStubParameters[0]}`]);
 
   } else if (chat.detect && m.messageStubType == 72) {
-    await conn.sendMessage(m.chat, { text: `${usuario} 𝐂𝐀𝐌𝐁𝐈𝐎 𝐋𝐀 𝐃𝐔𝐑𝐀𝐂𝐈𝐎́𝐍 𝐃𝐄 𝐋𝐎𝐒 𝐌𝐄𝐍𝐒𝐀𝐉𝐄𝐒 𝐓𝐄𝐌𝐏𝐎𝐑𝐀𝐋𝐄𝐒 𝐀 *@${m.messageStubParameters[0]}*`, mentions: [m.sender] }, { quoted: fkontak });
+    await sendResponse(m.chat, `${usuario} 𝐂𝐀𝐌𝐁𝐈𝐎 𝐋𝐀 𝐃𝐔𝐑𝐀𝐂𝐈𝐎́𝐍 𝐃𝐄 𝐋𝐎𝐒 𝐌𝐄𝐍𝐒𝐀𝐉𝐄𝐒 𝐓𝐄𝐌𝐏𝐎𝐑𝐀𝐋𝐄𝐒 𝐀 *@${m.messageStubParameters[0]}*`, [m.sender]);
 
   } else if (chat.detect && m.messageStubType == 123) {
-    await conn.sendMessage(m.chat, { text: `${usuario} 𝐃𝐄𝐒𝐀𝐂𝐓𝐈𝐕𝐎 𝐋𝐎𝐒 𝐌𝐄𝐍𝐒𝐀𝐉𝐄𝐒 𝐓𝐄𝐌𝐏𝐎𝐑𝐀𝐋𝐄𝐒.`, mentions: [m.sender] }, { quoted: fkontak });
+    await sendResponse(m.chat, `${usuario} 𝐃𝐄𝐒𝐀𝐂𝐓𝐈𝐕𝐎 𝐋𝐎𝐒 𝐌𝐄𝐍𝐒𝐀𝐉𝐄𝐒 𝐓𝐄𝐌𝐏𝐎𝐑𝐀𝐋𝐄𝐒.`, [m.sender]);
   } else {
     console.log({
       messageStubType: m.messageStubType,
@@ -78,14 +82,34 @@ export async function before(m, { conn, participants, groupMetadata }) {
     const chatId = m.isGroup ? m.chat : m.sender;
     const uniqid = chatId.split('@')[0];
     const sessionPath = './sessions/';
-    const files = await fs.readdir(sessionPath);
-    let filesDeleted = 0;
-    for (const file of files) {
-      if (file.includes(uniqid)) {
-        await fs.unlink(path.join(sessionPath, file));
-        filesDeleted++;
-        console.log(`⚠️ Eliminacion de session (PreKey) que provocan el "undefined" en el chat`);
+    if (existsSync(sessionPath)) {
+      const files = await fs.readdir(sessionPath);
+      let filesDeleted = 0;
+      for (const file of files) {
+        if (file.includes(uniqid)) {
+          await fs.unlink(path.join(sessionPath, file));
+          filesDeleted++;
+          console.log(`⚠️ Eliminación de session (PreKey) que provocan el "undefined" en el chat`);
+        }
       }
+    } else {
+      console.log('La carpeta de sesiones no existe.');
     }
   }
+
+  // Notificación a los admins cuando hay un cambio importante
+  let adminMentions = participants.filter(p => p.isAdmin).map(p => p.id);
+  if (adminMentions.length > 0 && chat.detect) {
+    await sendResponse(m.chat, `Admins, se ha realizado un cambio importante en el grupo: ${nombre}`, adminMentions);
+  }
+  
+  // Registro de actividades
+  const logMessage = `Acción realizada por ${usuario}: ${m.messageStubType}`;
+  console.log(logMessage);
+  fs.appendFile('./logs.txt', logMessage + '\n', (err) => {
+    if (err) console.error('Error al guardar el registro:', err);
+  });
+  
+  // Confirmación de acción exitosa
+  await conn.sendMessage(m.chat, { text: 'Acción completada exitosamente.' });
 }
