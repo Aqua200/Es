@@ -1,93 +1,70 @@
-import path from 'path';
-import { promises as fs, existsSync } from 'fs';
+import {WAMessageStubType} from '@whiskeysockets/baileys'
+import fetch from 'node-fetch'
+import { readdirSync, unlinkSync, existsSync, promises as fs, rmSync } from 'fs'
+import path from 'path'
 
-let WAMessageStubType = (await import('@whiskeysockets/baileys')).default;
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-async function sendResponse(chatId, message, mentions = [], fkontak) {
-  await conn.sendMessage(chatId, { text: message, mentions }, { quoted: fkontak });
-}
+export async function before(m, { conn, participants, groupMetadata}) {
+if (!m.messageStubType || !m.isGroup) return
+let usuario = `@${m.sender.split`@`[0]}`
+const groupName = (await conn.groupMetadata(m.chat)).subject
+const groupAdmins = participants.filter((p) => p.admin)
 
-export async function before(m, { conn, participants, groupMetadata }) {
-  // Asegurar que el mensaje sea válido y sea un grupo
-  if (!m.messageStubType || !m.isGroup) return;
+let pp = await conn.profilePictureUrl(conn.user.jid).catch(_ => imagen1)
+const img = await (await fetch(pp)).buffer()
+const chat = global.db.data.chats[m.chat]
+const mentionsString = [m.sender, m.messageStubParameters[0], ...groupAdmins.map((v) => v.id)]
+const mentionsContentM = [m.sender, m.messageStubParameters[0]]
 
-  const fkontak = {
-    key: { 
-      participants: "0@s.whatsapp.net", 
-      remoteJid: "status@broadcast", 
-      fromMe: false, 
-      id: "Halo"
-    },
-    message: { 
-      contactMessage: {
-        vcard: `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`
-      }
-    }, 
-    participant: "0@s.whatsapp.net"
-  };
+/*if (chat.detect && m.messageStubType == 2) {
+const chatId = m.isGroup ? m.chat : m.sender;
+const uniqid = chatId.split('@')[0];
+const sessionPath = './YoshiSession/';
+const files = await fs.readdir(sessionPath);
+let filesDeleted = 0;
+for (const file of files) {
+if (file.includes(uniqid)) {
+await fs.unlink(path.join(sessionPath, file));
+filesDeleted++;
+console.log(`⚠️ Eliminacion YoshiSession (PreKey) que provocan el undefined el chat`)}}}*/
 
-  let chat = global.db.data.chats[m.chat];
-  let usuario = `@${m.sender.split('@')[0]}`;
-  let pp = await conn.profilePictureUrl(m.chat, 'image').catch(_ => null) || 'https://files.catbox.moe/xr2m6u.jpg';
+if (chat.detect && m.messageStubType == 21) {
+await this.sendMessage(m.chat, { text: `🍟 ${usuario} *Ha cambiado el nombre del grupo*`, mentions: [m.sender], mentions: (await conn.groupMetadata(m.chat)).participants.map(v => v.id) }, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100}) 
 
-  const messages = {
-    21: `《✧》${usuario} Ha cambiado el nombre del grupo.\n\n✦ Ahora el grupo se llama:\n*<${m.messageStubParameters[0]}>*.`,
-    22: { image: { url: pp }, caption: `《✧》${usuario} Ha cambiado la imagen del grupo.` },
-    23: `《✧》El enlace del grupo ha sido restablecido por:\n> » ${usuario}`,
-    25: `《✧》${usuario} Ha permitido que ${m.messageStubParameters[0] == 'on' ? 'solo admins' : 'todos'} puedan configurar el grupo.`,
-    26: `《✧》El grupo ha sido ${m.messageStubParameters[0] == 'on' ? '*cerrado 🔒*' : '*abierto 🔓*'} Por ${usuario}\n\n✦ Ahora ${m.messageStubParameters[0] == 'on' ? '*solo admins*' : '*todos*'} pueden enviar mensaje.`,
-    27: `《✧》Ha llegado un nuevo participante al grupo.\n\n◦ ✐ Grupo: *${groupMetadata.subject}*\n\n◦ ⚘ Bienvenido/a: @${m.messageStubParameters[0].split('@')[0]} ingresado al grupo\n\n◦ ✦ Aceptado por: @${m.sender.split('@')[0]} que aceptó la solicitud de @${m.messageStubParameters[0].split('@')[0]} a ingresar al grupo.`,
-    29: `《✧》@${m.messageStubParameters[0].split('@')[0]} Ahora es admin del grupo.\n\n✦ Acción hecha por:\n> » ${usuario}`,
-    30: `《✧》@${m.messageStubParameters[0].split('@')[0]} Deja de ser admin del grupo.\n\n✦ Acción hecha por:\n> » ${usuario}`,
-    72: `${usuario} 𝐂𝐀𝐌𝐁𝐈𝐎 𝐋𝐀 𝐃𝐔𝐑𝐀𝐂𝐈𝐎́𝐍 𝐃𝐄 𝐋𝐎𝐒 𝐌𝐄𝐍𝐒𝐀𝐉𝐄𝐒 𝐓𝐄𝐌𝐏𝐎𝐑𝐀𝐋𝐄𝐒 𝐀 *@${m.messageStubParameters[0]}*`,
-    123: `${usuario} 𝐃𝐄𝐒𝐀𝐂𝐓𝐈𝐕𝐎 𝐋𝐎𝐒 𝐌𝐄𝐍𝐒𝐀𝐉𝐄𝐒 𝐓𝐄𝐌𝐏𝐎𝐑𝐀𝐋𝐄𝐒.`
-  };
+} else if (chat.detect && m.messageStubType == 22) {
+await this.sendMessage(m.chat, { text: `🚩 ${usuario} *Ha cambiado la imágen del grupo*`, mentions: [m.sender] }, { quoted: fliveLoc, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100}) 
 
-  // Detectar cambios en el grupo
-  if (chat.detect && messages[m.messageStubType]) {
-    if (typeof messages[m.messageStubType] === 'string') {
-      await sendResponse(m.chat, messages[m.messageStubType], [m.sender], fkontak);
-    } else {
-      await conn.sendMessage(m.chat, messages[m.messageStubType], { quoted: fkontak });
-    }
-  } else {
-    console.log("Tipo de mensaje no reconocido:", m.messageStubType);
-  }
+} else if (chat.detect && m.messageStubType == 24) {
+await this.sendMessage(m.chat, { text: `🍟 ${usuario} *Ha modificado la descripción!*\n\nNueva descripción:\n\n${m.messageStubParameters[0]}`, mentions: [m.sender] }, { quoted: fliveLoc, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 
-  // Manejo de sesiones (para evitar el "undefined" en algunos casos)
-  if (chat.detect && m.messageStubType == 2) {
-    const chatId = m.isGroup ? m.chat : m.sender;
-    const uniqid = chatId.split('@')[0];
-    const sessionPath = './sessions/';
-    if (existsSync(sessionPath)) {
-      const files = await fs.readdir(sessionPath);
-      for (const file of files) {
-        if (file.includes(uniqid)) {
-          await fs.unlink(path.join(sessionPath, file));
-          console.log(`⚠️ Eliminación de session (PreKey) que provocan el "undefined" en el chat`);
-        }
-      }
-    } else {
-      console.log('La carpeta de sesiones no existe.');
-    }
-  }
+} else if (chat.detect && m.messageStubType == 25) {
+await this.sendMessage(m.chat, { text: `🚩 *Ahora ${m.messageStubParameters[0] == 'on' ? 'solo admins' : 'todos'} pueden editar la información del grupo*`, mentions: [m.sender] }, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 
-  // Notificación a los admins cuando hay un cambio importante
-  let adminMentions = participants.filter(p => p.isAdmin).map(p => p.id);
-  if (adminMentions.length > 0 && chat.detect) {
-    await sendResponse(m.chat, `Admins, se ha realizado un cambio importante en el grupo: ${messages[m.messageStubType]}`, adminMentions, fkontak);
-  }
+} else if (chat.detect && m.messageStubType == 26) {
+await this.sendMessage(m.chat, { text: `🚩 *El grupo ha sido ${m.messageStubParameters[0] == 'on' ? 'cerrado' : 'abierto'}*\n\n${m.messageStubParameters[0] == 'on' ? 'solo admins' : 'todos'} pueden enviar mensajes`, mentions: [m.sender] }, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 
-  // Registro de actividades
-  const logMessage = `Acción realizada por ${usuario}: ${m.messageStubType}`;
-  console.log(logMessage);
+} else if (chat.detect && m.messageStubType == 29) {
+let txt1 = `🚩 *Nuevo admin*\n\n`
+txt1 += `Nombre: @${m.messageStubParameters[0].split`@`[0]}\n`
+txt1 += `Le otorgó admin: @${m.sender.split`@`[0]}`
 
-  // Crear archivo de log si no existe y escribir el registro
-  const logFilePath = './logs.txt';
-  try {
-    await fs.appendFile(logFilePath, logMessage + '\n');
-    console.log('Registro guardado correctamente en logs.txt');
-  } catch (err) {
-    console.error('Error al guardar el registro:', err);
-  }
-}
+await conn.sendMessage(m.chat, {text: txt1, mentions: [...txt1.matchAll(/@([0-9]{5,16}|0)/g)].map((v) => v[1] + '@s.whatsapp.net'), contextInfo: { mentionedJid: [...txt1.matchAll(/@([0-9]{5,16}|0)/g)].map((v) => v[1] + '@s.whatsapp.net'), "externalAdReply": {"showAdAttribution": true, "containsAutoReply": true, "renderLargerThumbnail": true, "title": global.packname, "body": dev, "containsAutoReply": true, "mediaType": 1, "thumbnail": img, "mediaUrl": channel, "sourceUrl": channel}}})
+
+} else if (chat.detect && m.messageStubType == 30) {
+let txt2 = `🚩 *Un admin menos*\n\n`
+txt2 += `Nombre: @${m.messageStubParameters[0].split`@`[0]}\n`
+txt2 += `Le quitó admin: @${m.sender.split`@`[0]}`
+
+await conn.sendMessage(m.chat, {text: txt2, mentions: [...txt2.matchAll(/@([0-9]{5,16}|0)/g)].map((v) => v[1] + '@s.whatsapp.net'), contextInfo: { mentionedJid: [...txt2.matchAll(/@([0-9]{5,16}|0)/g)].map((v) => v[1] + '@s.whatsapp.net'), "externalAdReply": {"showAdAttribution": true, "containsAutoReply": true, "renderLargerThumbnail": true, "title": global.packname, "body": dev, "containsAutoReply": true, "mediaType": 1, "thumbnail": img, "mediaUrl": channel, "sourceUrl": channel}}})
+
+} else if (chat.detect && m.messageStubType == 72) {
+await this.sendMessage(m.chat, { text: `🍟 ${usuario} *Cambió la duración de mensajes temporales a @${m.messageStubParameters[0]}*`, mentions: [m.sender] }, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+
+} else if (chat.detect && m.messageStubType == 123) {
+await this.sendMessage(m.chat, { text: `🍟 ${usuario} *Desactivó los mensajes temporales*`, mentions: [m.sender] }, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+} else {
+console.log({messageStubType: m.messageStubType,
+messageStubParameters: m.messageStubParameters,
+type: WAMessageStubType[m.messageStubType], 
+})}}
