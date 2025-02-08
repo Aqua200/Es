@@ -6,19 +6,13 @@ import fetch from 'node-fetch'
 import axios from 'axios'
 import moment from 'moment-timezone'
 
-//*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
-
 global.owner = [
-  ['5216631079388, '@Neykoor⛩️', true], // Asegúrate de poner un número válido
+  ['5216631079388', '@Neykoor⛩️', true], // Número corregido
   ['521XXXXXXXXXX', '@Three✨', true],
 ]
 
-//*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
-
 global.mods = []
 global.prems = []
-
-//*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 const packname = `✨Anika🌸`
 const author = '🌃Neykoor✨'
@@ -29,20 +23,14 @@ const listo = 'Anika lista para servirle🌹!'
 const namechannel = '「  Anika-news  」'
 const baileys = '@whiskeysockets/baileys'
 
-//*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
-
 const catalogoPath = './storage/img/catalogo.png'
 const siskedurlPath = './storage/img/siskedurl.jpg'
 
 global.catalogo = fs.existsSync(catalogoPath) ? fs.readFileSync(catalogoPath) : null
 global.siskedurl = fs.existsSync(siskedurlPath) ? fs.readFileSync(siskedurlPath) : null
 
-//*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
-
 global.group = 'https://chat.whatsapp.com/LcweEoBy4W16ngE2Pr4ClR'
 global.canal = 'https://whatsapp.com/channel/0029Vb3uTsb90x2rvI6D3G3b'
-
-//*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.estilo = {
   key: {
@@ -63,20 +51,14 @@ global.estilo = {
   }
 }
 
-//*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
-
 global.cheerio = cheerio
 global.fs = fs
 global.fetch = fetch
 global.axios = axios
 global.moment = moment	
 
-//*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
-
 global.multiplier = 69 
-global.maxwarn = '2' // Máximas advertencias
-
-//*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
+global.maxwarn = '2'
 
 let file = fileURLToPath(import.meta.url)
 watchFile(file, () => {
@@ -85,6 +67,4 @@ watchFile(file, () => {
   import(file).then(() => console.log(chalk.greenBright('Config.js actualizado!')))
 })
 
-//*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
-
-export { packname, author, wait, botname, textbot, listo, namechannel, baileys } de 
+export { packname, author, wait, botname, textbot, listo, namechannel, baileys };
