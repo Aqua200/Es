@@ -75,7 +75,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
   // Manejo de tipos de mensaje no reconocido, evitando el error
   else {
-    // Solo logueamos en la consola, no enviamos ningún mensaje al chat
+    // Solo logueamos en la consola, sin enviar ningún mensaje al chat
     console.log("Tipo de mensaje no reconocido:", m.messageStubType);
   }
 
