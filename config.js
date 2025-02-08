@@ -1,39 +1,41 @@
-import { watchFile, unwatchFile } from 'fs' 
+import fs, { watchFile, unwatchFile } from 'fs'
 import chalk from 'chalk'
 import { fileURLToPath } from 'url'
-import fs from 'fs'
 import cheerio from 'cheerio'
 import fetch from 'node-fetch'
 import axios from 'axios'
-import moment from 'moment-timezone' 
+import moment from 'moment-timezone'
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.owner = [
-  ['', '@Neykoor⛩️', true],
-  ['', '@Three✨', true],
+  ['521XXXXXXXXXX', '@Neykoor⛩️', true], // Asegúrate de poner un número válido
+  ['521XXXXXXXXXX', '@Three✨', true],
 ]
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.mods = []
 global.prems = []
-   
-//*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
-
-global.packname = `✨Anika🌸'
-global.author = '🌃Neykoor✨
-global.wait = '🌹Anika✨'
-global.botname = '🌸Anika✨'
-global.textbot = `🌸Anika a tu servicio✨`
-global.listo = 'Ankia lista para servirle🌹!'
-global.namechannel = '「  Anika-news  」'
-global.baileys = '@whiskeysockets/baileys'
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
-global.catalogo = fs.readFileSync('./storage/img/catalogo.png')
-global.siskedurl = fs.readFileSync('./storage/img/siskedurl.jpg')
+const packname = `✨Anika🌸`
+const author = '🌃Neykoor✨'
+const wait = '🌹Anika✨'
+const botname = '🌸Anika✨'
+const textbot = `🌸Anika a tu servicio✨`
+const listo = 'Anika lista para servirle🌹!'
+const namechannel = '「  Anika-news  」'
+const baileys = '@whiskeysockets/baileys'
+
+//*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
+
+const catalogoPath = './storage/img/catalogo.png'
+const siskedurlPath = './storage/img/siskedurl.jpg'
+
+global.catalogo = fs.existsSync(catalogoPath) ? fs.readFileSync(catalogoPath) : null
+global.siskedurl = fs.existsSync(siskedurlPath) ? fs.readFileSync(siskedurlPath) : null
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
@@ -42,7 +44,24 @@ global.canal = 'https://whatsapp.com/channel/0029Vb3uTsb90x2rvI6D3G3b'
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
-global.estilo = { key: {  fromMe: false, participant: `0@s.whatsapp.net`, ...(false ? { remoteJid: "5219992095479-1625305606@g.us" } : {}) }, message: { orderMessage: { itemCount : -999999, status: 1, surface : 1, message: botname, orderTitle: 'Bang', thumbnail: catalogo, sellerJid: '0@s.whatsapp.net'}}}
+global.estilo = {
+  key: {
+    fromMe: false,
+    participant: `0@s.whatsapp.net`,
+    ...(false ? { remoteJid: "5219992095479-1625305606@g.us" } : {})
+  },
+  message: {
+    orderMessage: {
+      itemCount: -999999,
+      status: 1,
+      surface: 1,
+      message: botname,
+      orderTitle: 'Bang',
+      thumbnail: global.catalogo,
+      sellerJid: '0@s.whatsapp.net'
+    }
+  }
+}
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
@@ -55,7 +74,7 @@ global.moment = moment
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.multiplier = 69 
-global.maxwarn = '2' // máxima advertencias
+global.maxwarn = '2' // Máximas advertencias
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
@@ -63,5 +82,9 @@ let file = fileURLToPath(import.meta.url)
 watchFile(file, () => {
   unwatchFile(file)
   console.log(chalk.redBright("Update 'config.js'"))
-  import(`${file}?update=${Date.now()}`)
+  import(file).then(() => console.log(chalk.greenBright('Config.js actualizado!')))
 })
+
+//*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
+
+export { packname, author, wait, botname, textbot, listo, namechannel, baileys } de 
