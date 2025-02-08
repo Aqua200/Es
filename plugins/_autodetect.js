@@ -1,4 +1,3 @@
-
 import path from 'path';  // Agregar la importación de 'path'
 let WAMessageStubType = (await import('@whiskeysockets/baileys')).default;
 import { promises as fs, readdirSync, unlinkSync, existsSync } from 'fs';
@@ -30,7 +29,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
   let pp = await conn.profilePictureUrl(m.chat, 'image').catch(_ => null) || 'https://files.catbox.moe/xr2m6u.jpg';
 
   let nombre, foto, edit, newlink, status, admingp, noadmingp, aceptar;
-  
+
   nombre = `《✧》${usuario} Ha cambiado el nombre del grupo.\n\n✦ Ahora el grupo se llama:\n*<${m.messageStubParameters[0]}>*.`;
   foto = `《✧》${usuario} Ha cambiado la imagen del grupo.`;
   edit = `《✧》${usuario} Ha permitido que ${m.messageStubParameters[0] == 'on' ? 'solo admins' : 'todos'} puedan configurar el grupo.`;
@@ -70,12 +69,6 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
   } else if (chat.detect && m.messageStubType == 123) {
     await sendResponse(m.chat, `${usuario} 𝐃𝐄𝐒𝐀𝐂𝐓𝐈𝐕𝐎 𝐋𝐎𝐒 𝐌𝐄𝐍𝐒𝐀𝐉𝐄𝐒 𝐓𝐄𝐌𝐏𝐎𝐑𝐀𝐋𝐄𝐒.`, [m.sender]);
-  } else {
-    console.log({
-      messageStubType: m.messageStubType,
-      messageStubParameters: m.messageStubParameters,
-      type: WAMessageStubType[m.messageStubType],
-    });
   }
 
   // Manejo de sesiones (para evitar el "undefined" en algunos casos)
