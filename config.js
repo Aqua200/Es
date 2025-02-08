@@ -9,7 +9,7 @@ import moment from 'moment-timezone'
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.owner = [
-  ['521XXXXXXXXXX', '@Neykoor⛩️', true], // Asegúrate de poner un número válido
+  ['5216631079388, '@Neykoor⛩️', true], // Asegúrate de poner un número válido
   ['521XXXXXXXXXX', '@Three✨', true],
 ]
 
