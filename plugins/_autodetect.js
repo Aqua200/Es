@@ -84,14 +84,10 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
   // Crear archivo de log si no existe y escribir el registro
   const logFilePath = './logs.txt';
-  fs.appendFile(logFilePath, logMessage + '\n', (err) => {
-    if (err) {
-      console.error('Error al guardar el registro:', err);
-    } else {
-      console.log('Registro guardado correctamente en logs.txt');
-    }
-  });
-
-  // Confirmación de acción exitosa
-  await conn.sendMessage(m.chat, { text: 'Acción completada exitosamente.' });
+  try {
+    await fs.appendFile(logFilePath, logMessage + '\n');
+    console.log('Registro guardado correctamente en logs.txt');
+  } catch (err) {
+    console.error('Error al guardar el registro:', err);
+  }
 }
