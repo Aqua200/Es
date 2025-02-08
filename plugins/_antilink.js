@@ -1,8 +1,7 @@
-let linkRegex = /(https?:\/\/(?:www\.)?(?:t\.me|telegram\.me|whatsapp\.com)\/\S+)|(https?:\/\/chat\.whatsapp\.com\/\S+)|(https?:\/\/whatsapp\.com\/channel\/\S+)/i
-
 export async function before(m, { isAdmin, isBotAdmin }) {
-  if (m.isBaileys && m.fromMe) return !0;
-  if (!m.isGroup) return !1;
+  if (m.isBaileys && m.fromMe) return true;
+  if (!m.isGroup) return false;
+
   let chat = global.db.data.chats[m.chat];
   let delet = m.key.participant;
   let bang = m.key.id;
@@ -20,7 +19,7 @@ export async function before(m, { isAdmin, isBotAdmin }) {
     if (isBotAdmin) {
       // Asegurarse de que no es el enlace del grupo
       const linkThisGroup = `https://chat.whatsapp.com/${await this.groupInviteCode(m.chat)}`;
-      if (m.text.includes(linkThisGroup)) return !0;
+      if (m.text.includes(linkThisGroup)) return true;
     }
 
     // Informar al usuario que ha enviado un enlace prohibido
@@ -37,6 +36,4 @@ export async function before(m, { isAdmin, isBotAdmin }) {
     // Expulsar al usuario del grupo
     await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove');
   }
-
-  return !0;
 }
