@@ -1,12 +1,14 @@
-import path from 'path';  // Agregar la importación de 'path'
+import path from 'path';
+import { promises as fs, existsSync } from 'fs';
+
 let WAMessageStubType = (await import('@whiskeysockets/baileys')).default;
-import { promises as fs, readdirSync, unlinkSync, existsSync } from 'fs';
 
 async function sendResponse(chatId, message, mentions = []) {
   await conn.sendMessage(chatId, { text: message, mentions: mentions }, { quoted: fkontak });
 }
 
 export async function before(m, { conn, participants, groupMetadata }) {
+  // Aseguramos que el mensaje sea válido y sea un grupo
   if (!m.messageStubType || !m.isGroup) return;
 
   const fkontak = {
@@ -69,6 +71,12 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
   } else if (chat.detect && m.messageStubType == 123) {
     await sendResponse(m.chat, `${usuario} 𝐃𝐄𝐒𝐀𝐂𝐓𝐈𝐕𝐎 𝐋𝐎𝐒 𝐌𝐄𝐍𝐒𝐀𝐉𝐄𝐒 𝐓𝐄𝐌𝐏𝐎𝐑𝐀𝐋𝐄𝐒.`, [m.sender]);
+  }
+
+  // Manejo de tipos de mensaje no reconocido, evitando el error
+  else {
+    // Solo logueamos en la consola, no enviamos ningún mensaje al chat
+    console.log("Tipo de mensaje no reconocido:", m.messageStubType);
   }
 
   // Manejo de sesiones (para evitar el "undefined" en algunos casos)
