@@ -3,7 +3,7 @@ import { promises as fs, existsSync } from 'fs';
 
 let WAMessageStubType = (await import('@whiskeysockets/baileys')).default;
 
-async function sendResponse(chatId, message, mentions = []) {
+async function sendResponse(chatId, message, mentions = [], fkontak) {
   await conn.sendMessage(chatId, { text: message, mentions }, { quoted: fkontak });
 }
 
@@ -46,7 +46,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
   // Detectar cambios en el grupo
   if (chat.detect && messages[m.messageStubType]) {
     if (typeof messages[m.messageStubType] === 'string') {
-      await sendResponse(m.chat, messages[m.messageStubType], [m.sender]);
+      await sendResponse(m.chat, messages[m.messageStubType], [m.sender], fkontak);
     } else {
       await conn.sendMessage(m.chat, messages[m.messageStubType], { quoted: fkontak });
     }
@@ -75,7 +75,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
   // Notificación a los admins cuando hay un cambio importante
   let adminMentions = participants.filter(p => p.isAdmin).map(p => p.id);
   if (adminMentions.length > 0 && chat.detect) {
-    await sendResponse(m.chat, `Admins, se ha realizado un cambio importante en el grupo: ${messages[m.messageStubType]}`, adminMentions);
+    await sendResponse(m.chat, `Admins, se ha realizado un cambio importante en el grupo: ${messages[m.messageStubType]}`, adminMentions, fkontak);
   }
 
   // Registro de actividades
