@@ -1,3 +1,4 @@
+
 import path from 'path';  // Agregar la importación de 'path'
 let WAMessageStubType = (await import('@whiskeysockets/baileys')).default;
 import { promises as fs, readdirSync, unlinkSync, existsSync } from 'fs';
@@ -106,8 +107,15 @@ export async function before(m, { conn, participants, groupMetadata }) {
   // Registro de actividades
   const logMessage = `Acción realizada por ${usuario}: ${m.messageStubType}`;
   console.log(logMessage);
-  fs.appendFile('./logs.txt', logMessage + '\n', (err) => {
-    if (err) console.error('Error al guardar el registro:', err);
+
+  // Crear archivo de log si no existe y escribir el registro
+  const logFilePath = './logs.txt';
+  fs.appendFile(logFilePath, logMessage + '\n', (err) => {
+    if (err) {
+      console.error('Error al guardar el registro:', err);
+    } else {
+      console.log('Registro guardado correctamente en logs.txt');
+    }
   });
   
   // Confirmación de acción exitosa
