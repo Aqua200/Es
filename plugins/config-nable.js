@@ -24,25 +24,25 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
   case 'antiPrivate':
     case 'antiprivado':
     case 'antipriv':
-     isAll = true
-        if (!isOwner) {
-          global.dfail('rowner', m, conn)
-          throw false
+      isAll = true
+      if (!isOwner) {
+        global.dfail('rowner', m, conn)
+        throw false
       }
       bot.antiPrivate = isEnable
       break
 
   case 'restrict':
     case 'restringir':
-     isAll = true
-        if (!isOwner) {
-          global.dfail('rowner', m, conn)
-          throw false
+      isAll = true
+      if (!isOwner) {
+        global.dfail('rowner', m, conn)
+        throw false
       }
       bot.restrict = isEnable
       break
 
- case 'antibot':
+  case 'antibot':
     case 'antibots':
       if (m.isGroup) {
         if (!(isAdmin || isOwner)) {
@@ -53,7 +53,7 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       chat.antiBot = isEnable
       break
 
- case 'antisubbots':
+  case 'antisubbots':
     case 'antisub':
     case 'antisubot':
     case 'antibot2':
@@ -66,7 +66,7 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       chat.antiBot2 = isEnable
       break
 
- case 'antifake':
+  case 'antifake':
     case 'antifakes':
     case 'antiarabes':
     case 'antiarab':
@@ -79,7 +79,7 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       chat.onlyLatinos = isEnable
       break
 
- case 'modoadmin':
+  case 'modoadmin':
     case 'soloadmin':
       if (m.isGroup) {
         if (!(isAdmin || isOwner)) {
@@ -90,13 +90,13 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       chat.modoadmin = isEnable
       break
 
- case 'autoread':
+  case 'autoread':
     case 'autoleer':
     case 'autover':
       isAll = true
-       if (!isROwner) {
-         global.dfail('rowner', m, conn)
-         throw false
+      if (!isROwner) {
+        global.dfail('rowner', m, conn)
+        throw false
       }
       global.opts['autoread'] = isEnable
       break
@@ -149,43 +149,44 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
   case 'antiSpam':
     case 'antispam':
     case 'antispamosos':
-     isAll = true
+      isAll = true
       if (!isOwner) {
-      global.dfail('rowner', m, conn)
-      throw false
+        global.dfail('rowner', m, conn)
+        throw false
       }
       bot.antiSpam = isEnable
       break
 
-   case 'antidelete': 
-     case 'antieliminar': 
-     case 'delete':
+  case 'antidelete': 
+    case 'antieliminar': 
+    case 'delete':
       if (m.isGroup) {
         if (!(isAdmin || isOwner)) {
-       global.dfail('admin', m, conn)
-       throw false
-     }}
-     chat.delete = isEnable
-     break
+          global.dfail('admin', m, conn)
+          throw false
+        }
+      }
+      chat.delete = isEnable
+      break
 
   case 'autobio':
     case 'status':
     case 'bio':
-     isAll = true
-        if (!isOwner) {
-          global.dfail('rowner', m, conn)
-          throw false
-        }
+      isAll = true
+      if (!isOwner) {
+        global.dfail('rowner', m, conn)
+        throw false
+      }
       bot.autobio = isEnable
       break
 
   case 'jadibotmd':
     case 'serbot':
     case 'subbots':
-     isAll = true
-        if (!isOwner) {
-          global.dfail('rowner', m, conn)
-          throw false
+      isAll = true
+      if (!isOwner) {
+        global.dfail('rowner', m, conn)
+        throw false
       }
       bot.jadibotmd = isEnable
       break
@@ -220,23 +221,29 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       chat.simi = isEnable
       break
 
-    case 'document':
+  case 'document':
     case 'documento':
-    isUser = true
-    user.useDocument = isEnable
+      isUser = true
+      user.useDocument = isEnable
+      break
+
+  case 'antilink':
+    if (m.isGroup) {
+      if (!(isAdmin || isOwner)) {
+        global.dfail('admin', m, conn)
+        throw false
+      }
+      console.log("Comando 'antilink' detectado, modificando configuración...");
+      console.log(`antiLink antes: ${chat.antiLink}`);
+      chat.antiLink = isEnable
+      console.log(`antiLink después: ${chat.antiLink}`);
+    } else {
+      console.log("El comando 'antilink' solo puede ejecutarse en un grupo.");
+    }
     break
 
-    case 'antilink':
-      if (m.isGroup) {
-        if (!(isAdmin || isOwner)) {
-          global.dfail('admin', m, conn)
-          throw false
-        }
-      }
-      chat.antiLink = isEnable
-      break
-    default:
-      if (!/[01]/.test(command)) return conn.reply(m.chat, `
+  default:
+    if (!/[01]/.test(command)) return conn.reply(m.chat, `
 *ゲ◜៹ Bot Creadores ៹◞ゲ*
 
 ${usedPrefix + command} antispam
@@ -252,7 +259,7 @@ ${usedPrefix + command} reaccion
 ${usedPrefix + command} simi  
 ${usedPrefix + command} modoadmin  
 ${usedPrefix + command} antilink`, m)
-      throw false
+    throw false
   }
   conn.reply(m.chat, `🍭 La función *${type}* se *${isEnable ? 'activó' : 'desactivó'}* ${isAll ? 'para este Bot' : isUser ? '' : 'para este chat'}`, m)
 }
