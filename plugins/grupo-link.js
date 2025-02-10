@@ -4,7 +4,7 @@ var handler = async (m, { conn, isBotAdmin }) => {
 
         // Omitir la restricción de banchat para este comando
         if (global.db.data.chats[group]?.isBanned) {
-            global.db.data.chats[group].isBanned = false;
+            // El bot sigue baneado en el grupo, pero el comando puede ejecutarse
         }
 
         // Intentar obtener el enlace
@@ -25,16 +25,13 @@ var handler = async (m, { conn, isBotAdmin }) => {
     }
 };
 
-// Se quita la restricción de banchat SOLO en este comando
+// Se asegura que el comando funcione en banchat
 handler.help = ['link'];
 handler.tags = ['grupo'];
 handler.command = ['link', 'enlace'];
 handler.group = true;
 handler.botAdmin = true;
 handler.restrict = false;
-handler.rowner = false;
-handler.mods = false;
-handler.admin = false;
-handler.private = false;
+handler.allownsfw = true; // Permite que funcione en chats baneados
 
 export default handler;
