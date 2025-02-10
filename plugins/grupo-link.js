@@ -1,7 +1,12 @@
 var handler = async (m, { conn, isBotAdmin }) => {
     try {
         let group = m.chat;
-        
+
+        // Omitir la restricción de banchat para este comando
+        if (global.db.data.chats[group]?.isBanned) {
+            global.db.data.chats[group].isBanned = false;
+        }
+
         // Intentar obtener el enlace
         let link = await conn.groupInviteCode(group).catch(() => null);
         if (!link) {
@@ -20,12 +25,16 @@ var handler = async (m, { conn, isBotAdmin }) => {
     }
 };
 
-// Permitir que el comando funcione en banchat
+// Se quita la restricción de banchat SOLO en este comando
 handler.help = ['link'];
 handler.tags = ['grupo'];
 handler.command = ['link', 'enlace'];
 handler.group = true;
 handler.botAdmin = true;
-handler.restrict = false; // Esto evita que el banchat afecte el comando
+handler.restrict = false;
+handler.rowner = false;
+handler.mods = false;
+handler.admin = false;
+handler.private = false;
 
 export default handler;
