@@ -1,11 +1,23 @@
-import { sticker } from '../lib/sticker.js'
 import fetch from 'node-fetch'
 import fs from 'fs'
 
 // Archivo para almacenar el ranking de golpes
 const dataFile = './database/slapRank.json'
 
-// Función para obtener GIFs dinámicos desde Tenor
+// Lista de videos personalizados
+const customVideos = [
+  'https://telegra.ph/file/3ba192c3806b097632d3f.mp4',
+  'https://telegra.ph/file/58b33c082a81f761bbee8.mp4',
+  'https://telegra.ph/file/da5011a1c504946832c81.mp4',
+  'https://telegra.ph/file/20ac5be925e6cd48f549f.mp4',
+  'https://telegra.ph/file/a00bc137b0beeec056b04.mp4',
+  'https://telegra.ph/file/080f08d0faa15119621fe.mp4',
+  'https://telegra.ph/file/eb0b010b2f249dd189d06.mp4',
+  'https://telegra.ph/file/734cb1e4416d80a299dac.mp4',
+  'https://telegra.ph/file/fc494a26b4e46c9b147d2.mp4'
+]
+
+// Función para obtener GIFs dinámicos en MP4 desde Tenor
 const tenorApiKey = 'TU_CLAVE_DE_API'
 const query = 'anime slap'
 const limit = 10
@@ -17,12 +29,12 @@ async function obtenerGif() {
     let json = await res.json()
     
     if (json.results && json.results.length > 0) {
-      return json.results[Math.floor(Math.random() * json.results.length)].media[0].gif.url
+      return json.results[Math.floor(Math.random() * json.results.length)].media[0].mp4.url
     }
   } catch (e) {
     console.error('Error obteniendo GIF de Tenor:', e)
   }
-  return slapGifs[Math.floor(Math.random() * slapGifs.length)].url // Si falla, usa un GIF local
+  return customVideos[Math.floor(Math.random() * customVideos.length)] // Si falla, usa un video local
 }
 
 let handler = async (m, { conn }) => {
@@ -40,8 +52,8 @@ let handler = async (m, { conn }) => {
     setTimeout(() => cooldown.delete(m.sender), delay)
     global.slapCooldown = cooldown
 
-    // Seleccionar un GIF dinámico
-    let imageUrl = await obtenerGif()
+    // Seleccionar aleatoriamente entre los videos personalizados y los de Tenor
+    let videoUrl = Math.random() < 0.5 ? await obtenerGif() : customVideos[Math.floor(Math.random() * customVideos.length)]
 
     let sender = `+${m.sender.split('@')[0]}`
     let texto = sender === `+${m.mentionedJid[0].split('@')[0]}`
@@ -62,17 +74,8 @@ let handler = async (m, { conn }) => {
     }
     fs.writeFileSync(dataFile, JSON.stringify(slapRank, null, 2))
 
-    // Convertir la imagen a buffer
-    let res = await fetch(imageUrl)
-    let buffer = await res.buffer()
-
-    // Generar el sticker
-    let stiker = await sticker(buffer, null, texto)
-    if (stiker) {
-      await conn.sendFile(m.chat, stiker, null, { asSticker: true })
-    } else {
-      await conn.sendFile(m.chat, imageUrl, 'slap.gif', texto)
-    }
+    // Enviar el MP4 como video
+    await conn.sendFile(m.chat, videoUrl, 'slap.mp4', texto, m)
 
     // Respuesta aleatoria del bot
     const respuestas = [
@@ -102,9 +105,9 @@ let handler = async (m, { conn }) => {
 
   } catch (e) {
     console.error(e)
-    await m.reply('⚠️ No se pudo generar el sticker. Aquí tienes el GIF en su lugar.')
-    let fallbackImage = slapGifs[Math.floor(Math.random() * slapGifs.length)].url
-    await conn.sendFile(m.chat, fallbackImage, 'slap.gif', '⚠️ Error al generar el sticker.')
+    await m.reply('⚠️ No se pudo enviar el video. Aquí tienes un MP4 en su lugar.')
+    let fallbackVideo = customVideos[Math.floor(Math.random() * customVideos.length)]
+    await conn.sendFile(m.chat, fallbackVideo, 'slap.mp4', '⚠️ Error al cargar el video.')
   }
 }
 
@@ -125,13 +128,3 @@ let contraHandler = async (m, { conn }) => {
 
 contraHandler.command = /^contraataque$/i
 export { contraHandler }
-
-// Lista de GIFs en caso de que falle Tenor
-const slapGifs = [
-  { url: "https://media.tenor.com/XiYuU9h44-AAAAAC/anime-slap-mad.gif", source: "Tenor" },
-  { url: "https://img.photobucket.com/albums/v639/aoie_emesai/100handslap.gif", source: "Photobucket" },
-  { url: "https://gifdb.com/images/high/yuruyuri-akari-kyoko-anime-slap-fcacgc0edqhci6eh.gif", source: "GifDB" },
-  { url: "https://gifdb.com/images/file/anime-sibling-slap-ptjipasdw3i3hsb0.gif", source: "GifDB" },
-  { url: "https://c.tenor.com/Lc7C5mLIVIQAAAAC/tenor.gif", source: "Tenor" },
-  { url: "https://i.pinimg.com/originals/71/a5/1c/71a51cd5b7a3e372522b5011bdf40102.gif", source: "Pinterest" }
-]
