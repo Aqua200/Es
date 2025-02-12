@@ -16,7 +16,9 @@ let handler = async (m, { conn }) => {
       return `~ ${name}`
     }))
 
-    let mentionedTags = mentionedNames.join(', ') // Víctimas con alias
+    let mentions = [senderJid, ...mentionedUsersJid] // Lista de menciones reales
+
+    let mentionedTags = mentionedUsersJid.map(user => `@${user.split('@')[0]}`).join(', ') // Etiquetas reales en grupos
 
     let imageUrl = s[Math.floor(Math.random() * s.length)] // Sticker aleatorio
 
@@ -27,18 +29,18 @@ let handler = async (m, { conn }) => {
     if (stiker) {
       await conn.sendMessage(m.chat, { 
         sticker: stiker, 
-        mentions: [senderJid, ...mentionedUsersJid] 
+        mentions: mentions
       }, { quoted: m })
     } else {
       await conn.sendFile(m.chat, imageUrl, 'slap.gif', caption, m, { 
-        mentions: [senderJid, ...mentionedUsersJid] 
+        mentions: mentions
       })
     }
 
     // Si golpean al bot, responde mencionando al atacante
     if (mentionedUsersJid.includes(conn.user.jid)) { 
       await conn.sendMessage(m.chat, { 
-        text: `¡Oye ${senderNumber}, ¿por qué me pegas?! 😠`, 
+        text: `¡Oye @${senderJid.split('@')[0]}, ¿por qué me pegas?! 😠`, 
         mentions: [senderJid] 
       }, { quoted: m })
       return
@@ -59,7 +61,7 @@ let handler = async (m, { conn }) => {
 
     await conn.sendMessage(m.chat, { 
       text: respuestaBot, 
-      mentions: [senderJid, ...mentionedUsersJid] 
+      mentions: mentions 
     }, { quoted: m })
 
   } catch (e) {
