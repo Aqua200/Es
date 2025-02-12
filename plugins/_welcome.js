@@ -15,11 +15,20 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
   // Descargar imagen solo si es necesario
   let imgBuffer = null;
+  let mimeType = 'image/jpeg'; // Tipo MIME por defecto
   try {
     let ppUrl = await conn.profilePictureUrl(m.messageStubParameters[0], 'image');
     if (ppUrl) {  // Asegurarse de que ppUrl no sea null
       let response = await axios.get(ppUrl, { responseType: 'arraybuffer' });
       imgBuffer = Buffer.from(response.data);
+
+      // Verificar el tipo de la imagen
+      const imageType = response.headers['content-type'];
+      if (imageType && imageType.startsWith('image/')) {
+        mimeType = imageType; // Establecer el tipo MIME según la respuesta
+      } else {
+        imgBuffer = null; // Si no es una imagen válida, limpiar
+      }
     }
   } catch {
     imgBuffer = null;
@@ -33,7 +42,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
     if (isWithImage && imgBuffer) {
       messageOptions.image = imgBuffer;
-      messageOptions.mimetype = 'image/jpeg';
+      messageOptions.mimetype = mimeType; // Usar el MIME dinámicamente
     }
 
     await conn.sendMessage(m.chat, messageOptions);
@@ -47,7 +56,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
     `Disfruta tu estadía en *${groupName}*, aquí todos somos familia. 💙`,
     `Este grupo es un espacio para aprender, compartir y crecer juntos. 📚✨`
   ];
-  
+
   // Mensajes personalizados
   const welcomeMessages = [
     `¡Bienvenido, ${user}! 🎉 ${customDescriptions[Math.floor(Math.random() * customDescriptions.length)]}`,
