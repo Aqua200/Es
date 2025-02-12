@@ -24,7 +24,6 @@ export async function before(m, { conn, participants, groupMetadata }) {
     let welcome = chat.sWelcome
       ? chat.sWelcome.replace('@user', user)
                    .replace('@group', groupMetadata.subject)
-                   .replace('@desc', groupMetadata.desc || 'sin descripción')
       : `┌─★ 𝐀𝐍𝐈𝐊𝐀 𝐃𝐌  
 │「 ✨ ¡Bienvenid@! ✨ 」  
 └┬★ 「 ${user} 」  
@@ -41,7 +40,6 @@ export async function before(m, { conn, participants, groupMetadata }) {
     let bye = chat.sBye
       ? chat.sBye.replace('@user', user)
                  .replace('@group', groupMetadata.subject)
-                 .replace('@desc', groupMetadata.desc || 'sin descripción')
       : `┌─★ 𝐀𝐍𝐈𝐊𝐀 𝐃𝐌  
 │「 👋 Adiós, estimad@ 」  
 └┬★ 「 ${user} 」  
