@@ -17,6 +17,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
   let pp = '';
   try {
     pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image');
+    console.log('Foto de perfil obtenida:', pp); // Log para verificar la URL obtenida
   } catch (e) {
     console.log('Error al obtener la foto de perfil:', e.message);
     pp = isWelcome ? defaultWelcomeImg : defaultByeImg;
@@ -26,6 +27,8 @@ export async function before(m, { conn, participants, groupMetadata }) {
   if (!pp || pp === 'undefined') {
     pp = isWelcome ? defaultWelcomeImg : defaultByeImg;
   }
+
+  console.log('URL de imagen usada:', pp); // Log para verificar la imagen final usada
 
   let img = await (await fetch(pp)).buffer();
 
