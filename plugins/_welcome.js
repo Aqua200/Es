@@ -1,30 +1,50 @@
-import { WAMessageStubType } from '@whiskeysockets/baileys'
+import {WAMessageStubType} from '@whiskeysockets/baileys'
 import fetch from 'node-fetch'
 
-export async function before(m, { conn, participants, groupMetadata }) {
-  // Asegúrate de que m.messageStubType y m.isGroup estén definidos correctamente
-  if (!m.messageStubType || !m.isGroup) return true;
-
-  // Asegúrate de que la variable imagen1 esté definida correctamente (puede ser una ruta relativa)
-  let img = imagen1
+export async function before(m, {conn, participants, groupMetadata}) {
+  if (!m.messageStubType || !m.isGroup) return !0;
+  let pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image').catch(_ => 'https://qu.ax/jYQH.jpg')
+  let img = await (await fetch(`${pp}`)).buffer()
   let chat = global.db.data.chats[m.chat]
 
-  // Configuración de bienvenida
-  if (chat.welcome && m.messageStubType == 27) {
-    let welcome = `「✿」Anika - MD \n「 Bienvenido :3 」\n「 @${m.messageStubParameters[0].split`@`[0]} 」\n「 Bienvenido/a 」\n「 ${groupMetadata.subject} 」\n\n> ✐ Usa *.menu* para ver mi menu.\n> 🜸 por el momento no hay url`
-    await conn.sendMini(m.chat, packname, textbot, welcome, img, img, redes, fkontak)
+  if (chat.bienvenida && m.messageStubType == 27) {
+    if (chat.sWelcome) {
+      let user = `@${m.messageStubParameters[0].split`@`[0]}`
+      let welcome = chat.sWelcome
+        .replace('@user', () => user)
+        .replace('@group', () => groupMetadata.subject)
+        .replace('@desc', () => groupMetadata.desc || 'sin descripción');
+      await conn.sendAi(m.chat, botname, textbot, welcome, img, img,)
+    } else {
+      let bienvenida = `┌─★ 𝙊𝙉𝙔𝙓 𝘽𝙊𝙏  \n│「 Bienvenido 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Bienvenido a\n   │✑  ${groupMetadata.subject}\n   │✑  Descripción:\n${groupMetadata.desc || 'sin descripción'}\n   └───────────────┈ ⳹`
+      await conn.sendAi(m.chat, botname, textbot, bienvenida, img, img)
+    }
   }
-
-  // Configuración de despedida
-  if (chat.welcome && m.messageStubType == 28) {
-    let bye = `「✿」Anika - MD \n「 Adios 」\n「 @${m.messageStubParameters[0].split`@`[0]} 」\n「 Se fue 」\n「 Vuelve pronto :3 」\n\n> ✐ Usa *.menu* para ver menu.\n> 🜸 por el momento no hay url`
-    await conn.sendMini(m.chat, packname, textbot, bye, img, img, redes, fkontak)
+  
+  if (chat.bienvenida && m.messageStubType == 28) {
+    if (chat.sBye) {
+      let user = `@${m.messageStubParameters[0].split`@`[0]}`
+      let bye = chat.sBye
+        .replace('@user', () => user)
+        .replace('@group', () => groupMetadata.subject)
+        .replace('@desc', () => groupMetadata.desc || 'sin descripción');
+      await conn.sendAi(m.chat, botname, textbot, bye, img, img)
+    } else {
+      let bye = `┌─★ 𝙊𝙉𝙔𝙓 𝘽𝙊𝙏  \n│「 BAYY 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Largate\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
+      await conn.sendAi(m.chat, botname, textbot, bye, img, img)
+    }
   }
-
-  // Configuración para la eliminación de participantes
-  if (chat.welcome && m.messageStubType == 32) {
-    let kick = `「✿」Anika - MD \n「 Adios 」\n「 @${m.messageStubParameters[0].split`@`[0]} 」\n「 Se fue 」\n「 Vuelve pronto :3」\n\n> ✐ Usa *.menu* para ver mi menu.\n> 🜸 por el momento no hay url`
-    await conn.sendMini(m.chat, packname, textbot, kick, img, img, redes, fkontak)
-    await conn.sendMessage(m.chat, { image: img, caption: bye, mentions: [who] })
-  }
-}
+  
+  if (chat.bienvenida && m.messageStubType == 32) {
+    if (chat.sBye) {
+      let user = `@${m.messageStubParameters[0].split`@`[0]}`
+      let bye = chat.sBye
+        .replace('@user', () => user)
+        .replace('@group', () => groupMetadata.subject)
+        .replace('@desc', () => groupMetadata.desc || 'sin descripción');
+      await conn.sendAi(m.chat, botname, textbot, bye, img, img)
+    } else {
+      let kick = `┌─★ 𝙊𝙉𝙔𝙓 𝘽𝙊𝙏  \n│「 BAYY 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Largate\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
+      await conn.sendAi(m.chat, botname, textbot, kick, img, img)
+    }
+}}
