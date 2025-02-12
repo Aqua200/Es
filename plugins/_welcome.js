@@ -23,7 +23,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
     pp = isWelcome ? defaultWelcomeImg : defaultByeImg;
   }
 
-  // Verificar si la URL obtenida es válida (es decir, no es una URL no válida o vacía)
+  // Verificar si la URL obtenida es válida
   if (!pp || pp === 'undefined') {
     pp = isWelcome ? defaultWelcomeImg : defaultByeImg;
   }
@@ -31,9 +31,14 @@ export async function before(m, { conn, participants, groupMetadata }) {
   console.log('URL de imagen usada:', pp); // Log para verificar la imagen final usada
 
   let img = await (await fetch(pp)).buffer();
+  console.log('Imagen cargada:', img); // Log para verificar que la imagen se ha cargado correctamente
+
+  // Verificar el tipo de evento
+  console.log('Tipo de evento:', m.messageStubType);
 
   // Mensaje de bienvenida
   if (chat.bienvenida && isWelcome) {
+    console.log('Enviando mensaje de bienvenida a', m.chat);
     let welcome = chat.sWelcome
       ? chat.sWelcome.replace('@user', user)
                    .replace('@group', groupMetadata.subject)
