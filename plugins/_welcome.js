@@ -18,6 +18,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
   try {
     pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image');
   } catch (e) {
+    console.log('Error al obtener la foto de perfil:', e);
     pp = isWelcome ? defaultWelcomeImg : defaultByeImg;
   }
 
