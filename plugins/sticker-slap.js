@@ -7,39 +7,55 @@ let handler = async (m, { conn }) => {
     if (m.quoted?.sender) m.mentionedJid.push(m.quoted.sender)
     if (!m.mentionedJid.length) m.mentionedJid.push(m.sender)
 
-    let sender = `@${m.sender.split('@')[0]}` // Usuario que dio la bofetada
-    let mentionedUsers = m.mentionedJid.map(user => `@${user.split('@')[0]}`).join(', ') // Usuarios mencionados
+    let senderJid = m.sender
+    let senderTag = `@${senderJid.split('@')[0]}` // Usuario que da la bofetada
+
+    let mentionedUsersJid = [...new Set(m.mentionedJid)] // Evita menciones duplicadas
+    let mentionedTags = mentionedUsersJid.map(user => `@${user.split('@')[0]}`).join(', ') // Usuarios golpeados
 
     let imageUrl = s[Math.floor(Math.random() * s.length)] // Sticker aleatorio
 
-    let caption = `¡PUM! 👋 ${sender} le dio una bofetada a ${mentionedUsers}`
+    let caption = `¡PUM! 👋 ${senderTag} le dio una bofetada a ${mentionedTags}`
 
     let stiker = await sticker(null, imageUrl, caption)
 
     if (stiker) {
-      await conn.sendMessage(m.chat, { sticker: stiker, mentions: m.mentionedJid }, { quoted: m })
+      await conn.sendMessage(m.chat, { 
+        sticker: stiker, 
+        mentions: [senderJid, ...mentionedUsersJid] 
+      }, { quoted: m })
     } else {
-      await conn.sendFile(m.chat, imageUrl, 'slap.gif', caption, m, { mentions: m.mentionedJid })
+      await conn.sendFile(m.chat, imageUrl, 'slap.gif', caption, m, { 
+        mentions: [senderJid, ...mentionedUsersJid] 
+      })
     }
 
-    // Si golpean al bot, responde defendiéndose
-    if (m.mentionedJid.includes(conn.user.jid)) { 
-      await conn.sendMessage(m.chat, { text: `¡Oye ${sender}, ¿por qué me pegas?! 😠`, mentions: [m.sender] }, { quoted: m })
+    // Si golpean al bot, responde defendiéndose mencionando al atacante
+    if (mentionedUsersJid.includes(conn.user.jid)) { 
+      await conn.sendMessage(m.chat, { 
+        text: `¡Oye ${senderTag}, ¿por qué me pegas?! 😠`, 
+        mentions: [senderJid] 
+      }, { quoted: m })
       return
     }
 
     // Respuesta aleatoria del bot después de la bofetada
     const respuestas = [
-      `¡Eso debió doler! 😱`,
-      `¡Tremenda bofetada, ${mentionedUsers}! 🤚`,
-      `¡Vaya golpe, ${mentionedUsers}! 😬`,
-      `¡Eso fue muy personal, ${mentionedUsers}! 😢`,
-      `¡Espero que ${mentionedUsers} esté bien después de eso! 😆`
+      `¡Eso debió doler! 😱 ¿Estás bien, ${mentionedTags}?`,
+      `¡Tremenda bofetada de ${senderTag} a ${mentionedTags}! 🤚`,
+      `¡Vaya golpe, ${mentionedTags}! 😬`,
+      `¡Eso fue muy personal, ${mentionedTags}! 😢 ¡Ten cuidado con ${senderTag}!`,
+      `¡Espero que ${mentionedTags} esté bien después de eso! 😆`,
+      `${senderTag} no tuvo piedad con ${mentionedTags} 😱`,
+      `¡Alguien detenga a ${senderTag}, que está muy agresivo! 😵`
     ]
 
     let respuestaBot = respuestas[Math.floor(Math.random() * respuestas.length)]
 
-    await conn.sendMessage(m.chat, { text: respuestaBot, mentions: m.mentionedJid }, { quoted: m })
+    await conn.sendMessage(m.chat, { 
+      text: respuestaBot, 
+      mentions: [senderJid, ...mentionedUsersJid] 
+    }, { quoted: m })
 
   } catch (e) {
     console.error(e)
