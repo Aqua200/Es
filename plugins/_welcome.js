@@ -25,13 +25,17 @@ export async function before(m, { conn, participants, groupMetadata }) {
     imgBuffer = null;
   }
 
-  const sendMessage = async (text) => {
+  const sendMessage = async (text, isWithImage = true) => {
     let messageOptions = { 
-      image: imgBuffer, 
-      mimetype: 'image/jpeg', 
       caption: text, 
       mentions: [m.messageStubParameters[0]] 
     };
+
+    if (isWithImage && imgBuffer) {
+      messageOptions.image = imgBuffer;
+      messageOptions.mimetype = 'image/jpeg';
+    }
+
     await conn.sendMessage(m.chat, messageOptions);
   };
 
@@ -83,7 +87,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
         `Esperamos verte activo en *${groupName}*, ${user}. ¡Únete a la conversación! 🗣️`,
       ];
       let followUp = followUpMessages[Math.floor(Math.random() * followUpMessages.length)];
-      await sendMessage(followUp);
+      await sendMessage(followUp, false); // Enviamos solo el texto, sin la imagen
     }, timerDelay); // Tiempo configurable
 
     // Encuesta automática después de 10 minutos
