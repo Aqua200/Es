@@ -1,3 +1,4 @@
+import fetch from 'node-fetch';
 import { join, dirname } from 'path';
 import { createRequire } from 'module';
 import { fileURLToPath } from 'url';
@@ -107,6 +108,36 @@ function start(file) {
     }
   }
 }
+
+// Función para obtener la imagen con manejo de errores y reintentos
+async function fetchImage(url, retries = 3, timeout = 5000) {
+  try {
+    const response = await fetch(url, { timeout: timeout }); // Timeout de 5 segundos
+    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+    return await response.buffer(); // Devuelve el buffer de la imagen
+  } catch (error) {
+    if (retries > 0) {
+      console.warn(`Error al obtener la imagen: ${error.message}. Reintentando... (${retries} intentos restantes)`);
+      return fetchImage(url, retries - 1, timeout);
+    } else {
+      console.error(`No se pudo obtener la imagen después de varios intentos: ${error.message}`);
+      return null; // Retorna null si no se pudo obtener la imagen
+    }
+  }
+}
+
+// URL de la imagen que quieres cargar
+const imageUrl = 'https://i.ibb.co/2jKKcrs/file.jpg';
+
+// Intentar cargar la imagen con reintentos
+fetchImage(imageUrl).then((imageBuffer) => {
+  if (imageBuffer) {
+    console.log('Imagen cargada con éxito.');
+    // Aquí puedes usar el buffer de la imagen para algo
+  } else {
+    console.log('No se pudo cargar la imagen.');
+  }
+});
 
 // Manejo de advertencias (por ejemplo, por exceso de listeners)
 process.on('warning', (warning) => {
