@@ -1,26 +1,26 @@
-import { WAMessageStubType } from '@whiskeysockets/baileys';
-import fetch from 'node-fetch';
+import {WAMessageStubType} from '@whiskeysockets/baileys'
+import fetch from 'node-fetch'
 
-const botname = 'MiBot'; // Define el nombre del bot
-
-export async function before(m, { conn, participants, groupMetadata }) {
+export async function before(m, {conn, participants, groupMetadata}) {
   if (!m.messageStubType || !m.isGroup) return !0;
-  let pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image').catch(_ => 'https://tinyurl.com/ylgu47w3');
-  let img = await (await fetch(pp)).buffer(); // Usamos buffer para obtener la imagen
-  let chat = global.db.data.chats[m.chat];
+  let img = imagen1
+  let chat = global.db.data.chats[m.chat]
 
-  if (chat.bienvenida && m.messageStubType == 27) {
-    let bienvenida = `┌─★ *${botname}* \n│「 Bienvenido 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Bienvenido a\n   │✑  ${groupMetadata.subject}\n   └───────────────┈ ⳹`;
-    await conn.sendAi(m.chat, botname, textbot, bienvenida, img, img, canal, estilo);
+  if (chat.welcome && m.messageStubType == 27) {
+    let welcome = ` 「✿」Anika - MD \n「 Bienvenido :3 」\n「 @${m.messageStubParameters[0].split`@`[0]} 」\n「 Bienvenido/a 」\n「 ${groupMetadata.subject} 」\n\n> ✐ Usa *.menu* para ver mi menu.
+> 🜸 por el momento no hay url`
+await conn.sendMini(m.chat, packname, textbot, welcome, img, img, redes, fkontak)
   }
 
-  if (chat.bienvenida && m.messageStubType == 28) {
-    let bye = `┌─★ *${botname}* \n│「 ADIOS 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`;
-    await conn.sendAi(m.chat, botname, textbot, bye, img, img, canal, estilo);
+  if (chat.welcome && m.messageStubType == 28) {
+    let bye = ` 「✿」Anika - MD \n「 Adios 」\n「 @${m.messageStubParameters[0].split`@`[0]} 」\n「 Se fue 」\n「 Vuelve pronto :3 」\n\n> ✐ Usa *.menu* para ver menu.
+> 🜸 por el momento no hay url`
+await conn.sendMini(m.chat, packname, textbot, bye, img, img, redes, fkontak)
   }
 
-  if (chat.bienvenida && m.messageStubType == 32) {
-    let kick = `┌─★ *${botname}* \n│「 ADIOS 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`;
-    await conn.sendAi(m.chat, botname, textbot, kick, img, img, canal, estilo);
-  }
-}
+  if (chat.welcome && m.messageStubType == 32) {
+    let kick = `「✿」Anika - MD \n「 Adios 」\n「 @${m.messageStubParameters[0].split`@`[0]} 」\n「 Se fue 」\n「 Vuelve pronto :3」\n\n> ✐ Usa *.menu* para ver mi menu. 
+> 🜸 por el momento no hay url`  
+await conn.sendMini(m.chat, packname, textbot, kick, img, img, redes, fkontak)
+await conn.sendMessage(m.chat, { image: img, caption: bye, mentions: [who] })
+}}
