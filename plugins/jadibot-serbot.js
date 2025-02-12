@@ -1,3 +1,7 @@
+// jadibot-serbot.js
+export default function yukiJadiBot() {
+  // código de la función...
+}
 import fs from 'fs';
 import path from 'path';
 
