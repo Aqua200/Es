@@ -1,4 +1,4 @@
-const { default: WAMessageStubType } = require('@whiskeysockets/baileys'); // Importación ajustada para compatibilidad
+import WAMessageStubType from '@whiskeysockets/baileys'; // Usar import en lugar de require
 
 /**
  * Esta función maneja los eventos de cambios en el grupo (nombre, imagen, enlace, etc.).
