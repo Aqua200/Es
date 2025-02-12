@@ -1,6 +1,8 @@
 import { WAMessageStubType } from '@whiskeysockets/baileys';
 import fetch from 'node-fetch';
 
+const botname = 'MiBot'; // Define el nombre del bot
+
 export async function before(m, { conn, participants, groupMetadata }) {
   if (!m.messageStubType || !m.isGroup) return !0;
   let pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image').catch(_ => 'https://tinyurl.com/ylgu47w3');
