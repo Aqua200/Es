@@ -3,22 +3,24 @@ import fetch from 'node-fetch'
 
 export async function before(m, {conn, participants, groupMetadata}) {
   if (!m.messageStubType || !m.isGroup) return !0;
-  let pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image').catch(_ => 'https://i.ibb.co/2jKKcrs/file.jpg')
-  let img = await (await fetch(`${pp}`)).buffer()
-  let chat = global.db.data.chats[m.chat]
+
+  // Imagen fija a usar
+  const img = await (await fetch('https://i.ibb.co/2jKKcrs/file.jpg')).buffer();
+  let chat = global.db.data.chats[m.chat];
 
   if (chat.bienvenida && m.messageStubType == 27) {
-    let bienvenida = `┌─★ *Sumi Sakurasawa* \n│「 Bienvenido 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Bienvenido a\n   │✑  ${groupMetadata.subject}\n   └───────────────┈ ⳹`
+    let bienvenida = `┌─★ *Sumi Sakurasawa* \n│「 Bienvenido 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Bienvenido a\n   │✑  ${groupMetadata.subject}\n   └───────────────┈ ⳹`;
     
-await conn.sendAi(m.chat, botname, textbot, bienvenida, img, img, canal)
+    await conn.sendAi(m.chat, botname, textbot, bienvenida, img, img, canal);
   }
-  
+
   if (chat.bienvenida && m.messageStubType == 28) {
-    let bye = `┌─★ *Sumi Sakurasawa* \n│「 ADIOS 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
-await conn.sendAi(m.chat, botname, textbot, bye, img, img, canal)
+    let bye = `┌─★ *Sumi Sakurasawa* \n│「 ADIOS 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`;
+    await conn.sendAi(m.chat, botname, textbot, bye, img, img, canal);
   }
-  
+
   if (chat.bienvenida && m.messageStubType == 32) {
-    let kick = `┌─★ *Sumi Sakurasawa* \n│「 ADIOS 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
-await conn.sendAi(m.chat, botname, textbot, kick, img, img, canal)
-}}
+    let kick = `┌─★ *Sumi Sakurasawa* \n│「 ADIOS 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`;
+    await conn.sendAi(m.chat, botname, textbot, kick, img, img, canal);
+  }
+}
