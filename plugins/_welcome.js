@@ -2,7 +2,7 @@ import { WAMessageStubType } from '@whiskeysockets/baileys';
 import fetch from 'node-fetch';
 
 export async function before(m, { conn, participants, groupMetadata }) {
-  if (!m.messageStubType || !m.isGroup) return !0;
+  if (!m.messageStubType || !m.isGroup) return true;
 
   let chat = global.db.data.chats[m.chat];
   let user = `@${m.messageStubParameters[0].split`@`[0]}`;
@@ -14,9 +14,13 @@ export async function before(m, { conn, participants, groupMetadata }) {
   let defaultByeImg = 'https://qu.ax/SQnJQ.jpg';
 
   // Obtener imagen de perfil o usar la predeterminada según el evento
-  let pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image').catch(_ =>
-    isWelcome ? defaultWelcomeImg : defaultByeImg
-  );
+  let pp = '';
+  try {
+    pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image');
+  } catch (e) {
+    pp = isWelcome ? defaultWelcomeImg : defaultByeImg;
+  }
+
   let img = await (await fetch(pp)).buffer();
 
   // Mensaje de bienvenida
