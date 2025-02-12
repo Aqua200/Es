@@ -20,7 +20,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
   let img;
   try {
-    img = await (await fetch(pp)).buffer();
+    img = await (await fetch(pp)).arrayBuffer(); // Se cambió buffer() por arrayBuffer()
   } catch {
     img = null; // Si hay error al obtener la imagen, evita que falle el envío.
   }
@@ -37,6 +37,12 @@ export async function before(m, { conn, participants, groupMetadata }) {
     default:
       return;
   }
+
+  // Definir las variables necesarias
+  const packname = "NombreDelPack"; // Cambia este valor según tu necesidad
+  const dev = "Desarrollador"; // Nombre del desarrollador
+  const channel = "Canal"; // Canal si es necesario
+  const estilo = "Estilo"; // Estilo o personalización si es necesario
 
   await conn.sendMini(m.chat, packname, dev, message, img, img, channel, estilo);
 }
