@@ -2,7 +2,8 @@ import fs from 'fs';
 import path from 'path';
 
 const loadPlugin = (pluginName) => {
-    const pluginPath = path.resolve(`/data/data/com.termux/files/home/ri/plugins/${pluginName}`);
+    // Asegúrate de que la ruta es correcta y que el archivo tiene la extensión .js
+    const pluginPath = path.resolve(`/data/data/com.termux/files/home/ri/plugins/${pluginName}.js`);
     
     return new Promise((resolve, reject) => {
         // Verificar si el archivo existe en la ruta especificada
@@ -18,7 +19,7 @@ const loadPlugin = (pluginName) => {
                     reject(error);
                 });
         } else {
-            const errorMsg = `El archivo ${pluginName} no se encuentra en la ruta especificada.`;
+            const errorMsg = `El archivo ${pluginName}.js no se encuentra en la ruta especificada.`;
             console.error(errorMsg);
             reject(new Error(errorMsg));
         }
