@@ -1,45 +1,54 @@
-export async function before(m, { conn, groupMetadata }) {
-  if (!m.messageStubType || !m.isGroup) return true;
+import { WAMessageStubType } from '@whiskeysockets/baileys';
+import fetch from 'node-fetch';
 
-  // Cargar imagen de perfil
-  let pp;
-  try {
-    pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image');
-  } catch (e) {
-    pp = 'https://qu.ax/iKouo.jpeg';  // Imagen de bienvenida por defecto
+export async function before(m, { conn, participants, groupMetadata }) {
+  if (!m.messageStubType || !m.isGroup) return !0;
+
+  let chat = global.db.data.chats[m.chat];
+  let user = `@${m.messageStubParameters[0].split`@`[0]}`;
+  let isWelcome = m.messageStubType == 27;
+  let isBye = [28, 32].includes(m.messageStubType);
+
+  // URLs de imagen predeterminadas
+  let defaultWelcomeImg = 'https://qu.ax/iKouo.jpeg';
+  let defaultByeImg = 'https://qu.ax/SQnJQ.jpg';
+
+  // Obtener imagen de perfil o usar la predeterminada según el evento
+  let pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image').catch(_ =>
+    isWelcome ? defaultWelcomeImg : defaultByeImg
+  );
+  let img = await (await fetch(pp)).buffer();
+
+  // Mensaje de bienvenida
+  if (chat.bienvenida && isWelcome) {
+    let welcome = chat.sWelcome
+      ? chat.sWelcome.replace('@user', user)
+                   .replace('@group', groupMetadata.subject)
+                   .replace('@desc', groupMetadata.desc || 'sin descripción')
+      : `┌─★ 𝐀𝐍𝐈𝐊𝐀 𝐃𝐌  
+│「 ✨ ¡Bienvenid@! ✨ 」  
+└┬★ 「 ${user} 」  
+   │✑  Qué alegría tenerte aquí  
+   │✑  Disfruta en ${groupMetadata.subject}  
+   │✑  No olvides leer las reglas 💖  
+   └───────────────┈ ⳹`;
+
+    await conn.sendMessage(m.chat, { image: img, caption: welcome }, { quoted: m });
   }
 
-  let pp2 = 'https://qu.ax/SQnJQ.jpg';  // Imagen de despedida por defecto
+  // Mensaje de salida o expulsión
+  if (chat.bienvenida && isBye) {
+    let bye = chat.sBye
+      ? chat.sBye.replace('@user', user)
+                 .replace('@group', groupMetadata.subject)
+                 .replace('@desc', groupMetadata.desc || 'sin descripción')
+      : `┌─★ 𝐀𝐍𝐈𝐊𝐀 𝐃𝐌  
+│「 👋 Adiós, estimad@ 」  
+└┬★ 「 ${user} 」  
+   │✑  Se ha ido del grupo 💔  
+   │✑  Esperamos verte regresar algún día ✨  
+   └───────────────┈ ⳹`;
 
-  // Obtener buffers de imágenes
-  let img, img2;
-  try {
-    img = await (await fetch(pp)).buffer();
-  } catch (e) {
-    img = null;  // Evita que falle si la imagen no carga
-  }
-
-  try {
-    img2 = await (await fetch(pp2)).buffer();
-  } catch (e) {
-    img2 = null;  // Evita que falle si la imagen no carga
-  }
-
-  // Verificar si `chat` está definido
-  let chat = global.db.data.chats[m.chat] || {};
-
-  if (chat.welcome) {
-    let user = `@${m.messageStubParameters[0].split`@`[0]}`;
-    let group = groupMetadata.subject;
-
-    if (m.messageStubType == 27) { // Cuando alguien entra
-      let wel = `ゲ◜៹ New Member ៹◞ゲ \n Usuario : ${user} \n Grupo : ${group}\n Powered By Neykoor✨`;
-      await conn.sendMini(m.chat, global.packname || 'Onyx Bot', global.dev || '', wel, img || pp, img || pp, global.channel || '', global.fkontak || '');
-    }
-
-    if (m.messageStubType == 28 || m.messageStubType == 29) { // Cuando alguien sale
-      let bye = `ゲ◜៹ Bye Member ៹◞ゲ \n Usuario: ${user} \n Grupo: ${group}\n Powered By Neykoor✨`;
-      await conn.sendMini(m.chat, global.packname || 'Onyx Bot', global.dev || '', bye, img2 || pp2, img2 || pp2, global.channel || '', global.fkontak || '');
-    }
+    await conn.sendMessage(m.chat, { image: img, caption: bye }, { quoted: m });
   }
 }
