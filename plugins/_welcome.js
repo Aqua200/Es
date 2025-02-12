@@ -22,6 +22,11 @@ export async function before(m, { conn, participants, groupMetadata }) {
     pp = isWelcome ? defaultWelcomeImg : defaultByeImg;
   }
 
+  // Verificar si la URL obtenida es válida (es decir, no es una URL no válida o vacía)
+  if (!pp || pp === 'undefined') {
+    pp = isWelcome ? defaultWelcomeImg : defaultByeImg;
+  }
+
   let img = await (await fetch(pp)).buffer();
 
   // Mensaje de bienvenida
