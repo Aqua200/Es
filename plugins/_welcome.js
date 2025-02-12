@@ -15,7 +15,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
   try {
     pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image');
   } catch {
-    pp = 'https://qu.ax/QGAVS.jpg';
+    pp = 'https://qu.ax/FvZdo.jpg';
   }
 
   let img;
