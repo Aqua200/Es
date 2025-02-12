@@ -2,47 +2,23 @@ import { WAMessageStubType } from '@whiskeysockets/baileys';
 import fetch from 'node-fetch';
 
 export async function before(m, { conn, participants, groupMetadata }) {
-  if (!m.messageStubType || !m.isGroup) return;
-
+  if (!m.messageStubType || !m.isGroup) return !0;
+  let pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image').catch(_ => 'https://tinyurl.com/ylgu47w3');
+  let img = await (await fetch(pp)).buffer(); // Usamos buffer para obtener la imagen
   let chat = global.db.data.chats[m.chat];
-  if (!chat || !chat.welcome) return;
 
-  let who = m.messageStubParameters[0] + '@s.whatsapp.net';
-  let user = global.db.data.users?.[who] || {};
-  let userName = user.name || await conn.getName(who);
-
-  let pp;
-  try {
-    pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image');
-  } catch {
-    pp = 'https://qu.ax/FvZdo.jpg';
+  if (chat.bienvenida && m.messageStubType == 27) {
+    let bienvenida = `┌─★ *${botname}* \n│「 Bienvenido 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Bienvenido a\n   │✑  ${groupMetadata.subject}\n   └───────────────┈ ⳹`;
+    await conn.sendAi(m.chat, botname, textbot, bienvenida, img, img, canal, estilo);
   }
 
-  let img;
-  try {
-    img = await (await fetch(pp)).arrayBuffer(); // Se cambió buffer() por arrayBuffer()
-  } catch {
-    img = null; // Si hay error al obtener la imagen, evita que falle el envío.
+  if (chat.bienvenida && m.messageStubType == 28) {
+    let bye = `┌─★ *${botname}* \n│「 ADIOS 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`;
+    await conn.sendAi(m.chat, botname, textbot, bye, img, img, canal, estilo);
   }
 
-  let message;
-  switch (m.messageStubType) {
-    case 27:
-      message = `Bienvenido @${m.messageStubParameters[0].split`@`[0]} a ${groupMetadata.subject}`;
-      break;
-    case 28:
-    case 32:
-      message = `Adiós @${m.messageStubParameters[0].split`@`[0]} de ${groupMetadata.subject}`;
-      break;
-    default:
-      return;
+  if (chat.bienvenida && m.messageStubType == 32) {
+    let kick = `┌─★ *${botname}* \n│「 ADIOS 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`;
+    await conn.sendAi(m.chat, botname, textbot, kick, img, img, canal, estilo);
   }
-
-  // Definir las variables necesarias
-  const packname = "NombreDelPack"; // Cambia este valor según tu necesidad
-  const dev = "Desarrollador"; // Nombre del desarrollador
-  const channel = "Canal"; // Canal si es necesario
-  const estilo = "Estilo"; // Estilo o personalización si es necesario
-
-  await conn.sendMini(m.chat, packname, dev, message, img, img, channel, estilo);
 }
