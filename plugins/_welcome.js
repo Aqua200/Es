@@ -3,13 +3,13 @@ import axios from 'axios';
 
 export async function before(m, { conn, participants, groupMetadata }) {
   if (!m.messageStubType || !m.isGroup) return true;
-  
+
   let chat = global.db.data.chats[m.chat];
   if (!chat.bienvenida) return;
 
   let user = `@${m.messageStubParameters[0].split`@`[0]}`;
   let groupName = groupMetadata.subject;
-  
+
   // Tiempo de espera configurable
   let timerDelay = chat.timerDelay || 300000; // Valor por defecto: 5 minutos (300,000 ms)
 
@@ -17,8 +17,10 @@ export async function before(m, { conn, participants, groupMetadata }) {
   let imgBuffer = null;
   try {
     let ppUrl = await conn.profilePictureUrl(m.messageStubParameters[0], 'image');
-    let response = await axios.get(ppUrl, { responseType: 'arraybuffer' });
-    imgBuffer = Buffer.from(response.data);
+    if (ppUrl) {  // Asegurarse de que ppUrl no sea null
+      let response = await axios.get(ppUrl, { responseType: 'arraybuffer' });
+      imgBuffer = Buffer.from(response.data);
+    }
   } catch {
     imgBuffer = null;
   }
@@ -49,7 +51,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
     `¡Hey ${user}, qué gusto tenerte en *${groupName}*! ${customDescriptions[Math.floor(Math.random() * customDescriptions.length)]}`,
     `Bienvenido ${user}, recuerda ser respetuoso y disfrutar el grupo 😉. ${customDescriptions[Math.floor(Math.random() * customDescriptions.length)]}`,
   ];
-  
+
   const leftMessages = [
     `Adiós ${user}, esperamos verte pronto 👋`,
     `¡${user} ha salido de *${groupName}*! 😢`,
