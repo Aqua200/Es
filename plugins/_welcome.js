@@ -36,9 +36,12 @@ export async function before(m, { conn, participants, groupMetadata }) {
   // Verificar el tipo de evento
   console.log('Tipo de evento:', m.messageStubType);
 
+  // Verificar configuración de bienvenida
+  console.log('Configuración de bienvenida:', chat.bienvenida);
+
   // Mensaje de bienvenida
   if (chat.bienvenida && isWelcome) {
-    console.log('Enviando mensaje de bienvenida a', m.chat);
+    console.log('Enviando mensaje de bienvenida');
     let welcome = chat.sWelcome
       ? chat.sWelcome.replace('@user', user)
                    .replace('@group', groupMetadata.subject)
