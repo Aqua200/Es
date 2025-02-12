@@ -117,4 +117,4 @@ process.on('warning', (warning) => {
 });
 
 // Iniciar el proceso con el archivo principal (main.js)
-start('main.js');
+start('sisked.js');
