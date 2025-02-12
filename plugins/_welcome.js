@@ -1,15 +1,24 @@
-import { WAMessageStubType } from '@whiskeysockets/baileys';
-import fetch from 'node-fetch';
-
 export async function before(m, { conn, groupMetadata }) {
   if (!m.messageStubType || !m.isGroup) return true;
 
   // Cargar imágenes de perfil
-  let pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image').catch(_ => welcome);
-  let pp2 = await conn.profilePictureUrl(m.messageStubParameters[0], 'image').catch(_ => adios);
+  let pp;
+  try {
+    pp = await conn.profilePictureUrl(m.messageStubParameters[0], 'image');
+  } catch (e) {
+    pp = 'https://qu.ax/iKouo.jpeg';  // Imagen de bienvenida
+  }
 
-  let img = await (await fetch(`${pp}`)).buffer();
-  let img2 = await (await fetch(`${pp2}`)).buffer();
+  let pp2;
+  try {
+    pp2 = await conn.profilePictureUrl(m.messageStubParameters[0], 'image');
+  } catch (e) {
+    pp2 = 'https://qu.ax/SQnJQ.jpg';  // Imagen de adiós
+  }
+
+  // Obtener la imagen
+  let img = await (await fetch(pp)).buffer();
+  let img2 = await (await fetch(pp2)).buffer();
 
   // Obtener información del chat
   let chat = global.db.data.chats[m.chat];
