@@ -8,14 +8,19 @@ let handler = async (m, { conn }) => {
     if (!m.mentionedJid.length) m.mentionedJid.push(m.sender)
 
     let senderJid = m.sender
-    let senderTag = `@${senderJid.split('@')[0]}` // Usuario que da la bofetada
+    let senderNumber = `+${senderJid.split('@')[0]}` // Número del atacante
 
     let mentionedUsersJid = [...new Set(m.mentionedJid)] // Evita menciones duplicadas
-    let mentionedTags = mentionedUsersJid.map(user => `@${user.split('@')[0]}`).join(', ') // Usuarios golpeados
+    let mentionedNames = await Promise.all(mentionedUsersJid.map(async user => {
+      let name = (await conn.getName(user)) || user.split('@')[0]
+      return `~ ${name}`
+    }))
+
+    let mentionedTags = mentionedNames.join(', ') // Víctimas con alias
 
     let imageUrl = s[Math.floor(Math.random() * s.length)] // Sticker aleatorio
 
-    let caption = `¡PUM! 👋 ${senderTag} le dio una bofetada a ${mentionedTags}`
+    let caption = `${senderNumber} *golpeó a* ${mentionedTags}`
 
     let stiker = await sticker(null, imageUrl, caption)
 
@@ -30,10 +35,10 @@ let handler = async (m, { conn }) => {
       })
     }
 
-    // Si golpean al bot, responde defendiéndose mencionando al atacante
+    // Si golpean al bot, responde mencionando al atacante
     if (mentionedUsersJid.includes(conn.user.jid)) { 
       await conn.sendMessage(m.chat, { 
-        text: `¡Oye ${senderTag}, ¿por qué me pegas?! 😠`, 
+        text: `¡Oye ${senderNumber}, ¿por qué me pegas?! 😠`, 
         mentions: [senderJid] 
       }, { quoted: m })
       return
@@ -42,12 +47,12 @@ let handler = async (m, { conn }) => {
     // Respuesta aleatoria del bot después de la bofetada
     const respuestas = [
       `¡Eso debió doler! 😱 ¿Estás bien, ${mentionedTags}?`,
-      `¡Tremenda bofetada de ${senderTag} a ${mentionedTags}! 🤚`,
+      `¡Tremenda bofetada de ${senderNumber} a ${mentionedTags}! 🤚`,
       `¡Vaya golpe, ${mentionedTags}! 😬`,
-      `¡Eso fue muy personal, ${mentionedTags}! 😢 ¡Ten cuidado con ${senderTag}!`,
+      `¡Eso fue muy personal, ${mentionedTags}! 😢 ¡Ten cuidado con ${senderNumber}!`,
       `¡Espero que ${mentionedTags} esté bien después de eso! 😆`,
-      `${senderTag} no tuvo piedad con ${mentionedTags} 😱`,
-      `¡Alguien detenga a ${senderTag}, que está muy agresivo! 😵`
+      `${senderNumber} no tuvo piedad con ${mentionedTags} 😱`,
+      `¡Alguien detenga a ${senderNumber}, que está muy agresivo! 😵`
     ]
 
     let respuestaBot = respuestas[Math.floor(Math.random() * respuestas.length)]
