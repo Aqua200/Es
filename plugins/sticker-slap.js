@@ -1,130 +1,61 @@
+import { sticker } from '../lib/sticker.js'
 import fetch from 'node-fetch'
-import fs from 'fs'
-
-// Archivo para almacenar el ranking de golpes
-const dataFile = './database/slapRank.json'
-
-// Lista de videos personalizados
-const customVideos = [
-  'https://telegra.ph/file/3ba192c3806b097632d3f.mp4',
-  'https://telegra.ph/file/58b33c082a81f761bbee8.mp4',
-  'https://telegra.ph/file/da5011a1c504946832c81.mp4',
-  'https://telegra.ph/file/20ac5be925e6cd48f549f.mp4',
-  'https://telegra.ph/file/a00bc137b0beeec056b04.mp4',
-  'https://telegra.ph/file/080f08d0faa15119621fe.mp4',
-  'https://telegra.ph/file/eb0b010b2f249dd189d06.mp4',
-  'https://telegra.ph/file/734cb1e4416d80a299dac.mp4',
-  'https://telegra.ph/file/fc494a26b4e46c9b147d2.mp4'
-]
-
-// Función para obtener GIFs dinámicos en MP4 desde Tenor
-const tenorApiKey = 'TU_CLAVE_DE_API'
-const query = 'anime slap'
-const limit = 10
-
-async function obtenerGif() {
-  try {
-    let tenorUrl = `https://g.tenor.com/v1/search?q=${query}&key=${tenorApiKey}&limit=${limit}`
-    let res = await fetch(tenorUrl)
-    let json = await res.json()
-    
-    if (json.results && json.results.length > 0) {
-      return json.results[Math.floor(Math.random() * json.results.length)].media[0].mp4.url
-    }
-  } catch (e) {
-    console.error('Error obteniendo GIF de Tenor:', e)
-  }
-  return customVideos[Math.floor(Math.random() * customVideos.length)] // Si falla, usa un video local
-}
+import MessageType from '@whiskeysockets/baileys'
 
 let handler = async (m, { conn }) => {
-  try {
+  try {   
     if (m.quoted?.sender) m.mentionedJid.push(m.quoted.sender)
-    if (!m.mentionedJid || m.mentionedJid.length === 0) m.mentionedJid.push(m.sender)
+    if (!m.mentionedJid.length) m.mentionedJid.push(m.sender)
 
-    // Cooldown para evitar spam
-    const cooldown = global.slapCooldown || new Map()
-    const delay = 5000 // 5 segundos
-    if (cooldown.has(m.sender)) {
-      return await m.reply('⏳ Espera unos segundos antes de usar este comando otra vez.')
+    let imageUrl = s[Math.floor(Math.random() * s.length)] 
+
+    let caption = `¡PUM! 👋 +${m.sender.split('@')[0]} le dio una bofetada a ${m.mentionedJid.map(user => 
+      (user === m.sender) ? 'alguien ' : `+${user.split('@')[0]}`).join(', ')}`
+
+    let stiker = await sticker(null, imageUrl, caption)
+
+    if (stiker) {
+      await conn.sendMessage(m.chat, { sticker: stiker }, { quoted: m })
+    } else {
+      await conn.sendFile(m.chat, imageUrl, 'slap.gif', caption, m)
     }
-    cooldown.set(m.sender, Date.now())
-    setTimeout(() => cooldown.delete(m.sender), delay)
-    global.slapCooldown = cooldown
 
-    // Seleccionar aleatoriamente entre los videos personalizados y los de Tenor
-    let videoUrl = Math.random() < 0.5 ? await obtenerGif() : customVideos[Math.floor(Math.random() * customVideos.length)]
-
-    let sender = `+${m.sender.split('@')[0]}`
-    let texto = sender === `+${m.mentionedJid[0].split('@')[0]}`
-      ? `${sender} intentó golpearse a sí mismo, ¿todo bien? 🤨`
-      : `${sender} le dio una bofetada a ${m.mentionedJid.map(user => `+${user.split('@')[0]}`).join(', ')}`
-
-    // Guardar el último golpe para permitir contraataque
-    global.lastSlap = global.lastSlap || {}
-    global.lastSlap[m.mentionedJid[0]] = m.sender
-
-    // Guardar en ranking de golpes
-    let slapRank = fs.existsSync(dataFile) ? JSON.parse(fs.readFileSync(dataFile)) : {}
-
-    for (let user of m.mentionedJid) {
-      if (!slapRank[m.sender]) slapRank[m.sender] = 0
-      if (!slapRank[user]) slapRank[user] = 0
-      slapRank[m.sender] += 1
+    // Si golpean al bot, responde defendiéndose
+    if (m.mentionedJid.includes(conn.user.jid)) { 
+      await conn.sendMessage(m.chat, { text: "¡Oye! ¿Por qué me pegas? 😠" }, { quoted: m })
+      return
     }
-    fs.writeFileSync(dataFile, JSON.stringify(slapRank, null, 2))
 
-    // Enviar el MP4 como video
-    await conn.sendFile(m.chat, videoUrl, 'slap.mp4', texto, m)
-
-    // Respuesta aleatoria del bot
+    // Respuesta aleatoria del bot después de la bofetada
     const respuestas = [
-      "¡Toma eso! 😆",
-      "¡Vaya golpe! 😱",
-      "Eso debió doler... 🤕",
-      "¡Qué agresividad! 😳",
-      "¿Todo bien por aquí? 🤨",
-      "¡Directo en la cara! 😵",
-      "¡Eso estuvo fuerte! 😬",
-      "¡Golpe crítico! 🎯",
-      "¡Eso dejó marca! 🤯",
-      "¡Eso es jugar sucio! 😡",
-      "¡Uy, eso tuvo que doler! 😰",
-      "¡Espero que no haya represalias! 😬",
-      "¡Mortal Kombat estaría orgulloso! 🥋",
-      "¡Bofetada con estilo! ✨",
-      "¡Te pasaste de la raya! 😤",
-      "¡Reacciona! No te dejes golpear así. 🤨",
-      "¡Cuidado con la venganza! 😈",
-      "¡Qué rápido fue eso! ⚡",
-      "¡No lo vio venir! 🤣",
-      "¡Bofetada a la velocidad de la luz! 🚀"
+      "¡Eso debió doler! 😱",
+      "¡Tremenda bofetada! 🤚",
+      "¡Eso fue muy personal! 😬",
+      "¡Ay, no! ¿Por qué tan agresivo? 😢",
+      "¡Espero que estén bien después de eso! 😆"
     ]
-    let randomRespuesta = respuestas[Math.floor(Math.random() * respuestas.length)]
-    await m.reply(randomRespuesta)
+
+    let respuestaBot = respuestas[Math.floor(Math.random() * respuestas.length)]
+
+    await conn.sendMessage(m.chat, { text: respuestaBot }, { quoted: m })
 
   } catch (e) {
     console.error(e)
-    await m.reply('⚠️ No se pudo enviar el video. Aquí tienes un MP4 en su lugar.')
-    let fallbackVideo = customVideos[Math.floor(Math.random() * customVideos.length)]
-    await conn.sendFile(m.chat, fallbackVideo, 'slap.mp4', '⚠️ Error al cargar el video.')
+    await m.reply('Ocurrió un error al generar el sticker.')
   }
 }
 
 handler.help = ['slap']
 handler.tags = ['General']
-handler.command = /^(slap|bofetada|manotada|abofetear|golpear|cachetada|puñetazo)$/i
+handler.command = /^slap|bofetada|manotada|abofetear|golpear/i
 
 export default handler
 
-// Comando de contraataque
-let contraHandler = async (m, { conn }) => {
-  let target = global.lastSlap ? global.lastSlap[m.sender] : null
-  if (!target) return await m.reply("⚠️ Nadie te ha golpeado recientemente.")
-
-  await m.reply(`¡${m.sender} contraatacó a ${target}! 🔥`)
-  delete global.lastSlap[m.sender]
-}
-
-contraHandler.command = /^contraataque$/i
-export { contraHandler }
+const s = [
+  "https://media.tenor.com/XiYuU9h44-AAAAAC/anime-slap-mad.gif",
+  "https://img.photobucket.com/albums/v639/aoie_emesai/100handslap.gif",
+  "https://gifdb.com/images/high/yuruyuri-akari-kyoko-anime-slap-fcacgc0edqhci6eh.gif",
+  "https://gifdb.com/images/file/anime-sibling-slap-ptjipasdw3i3hsb0.gif",
+  "https://c.tenor.com/Lc7C5mLIVIQAAAAC/tenor.gif",
+  "https://i.pinimg.com/originals/71/a5/1c/71a51cd5b7a3e372522b5011bdf40102.gif"
+]
