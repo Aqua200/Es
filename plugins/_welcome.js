@@ -15,12 +15,12 @@ export async function before(m, { conn, groupMetadata }) {
   let chat = global.db.data.chats[m.chat];
 
   if (chat.welcome && m.messageStubType == 27) { // Cuando alguien entra
-    let wel = `ゲ◜៹ New Member ៹◞ゲ \n Usuario : @${m.messageStubParameters[0].split`@`[0]} \n Grupo : ${groupMetadata.subject}\n Powered By Daniel`;
+    let wel = `ゲ◜៹ New Member ៹◞ゲ \n Usuario : @${m.messageStubParameters[0].split`@`[0]} \n Grupo : ${groupMetadata.subject}\n Powered By Neykoor✨`;
     await conn.sendMini(m.chat, packname, dev, wel, img, img, channel, fkontak);
   }
 
   if (chat.welcome && (m.messageStubType == 28 || m.messageStubType == 29)) { // Cuando alguien sale
-    let bye = `ゲ◜៹ Bye Member ៹◞ゲ \n Usuario: @${m.messageStubParameters[0].split`@`[0]} 」\n Grupo: ${groupMetadata.subject}\n Powered By Daniel`;
+    let bye = `ゲ◜៹ Bye Member ៹◞ゲ \n Usuario: @${m.messageStubParameters[0].split`@`[0]} 」\n Grupo: ${groupMetadata.subject}\n Powered By Neykoor✨`;
     await conn.sendMini(m.chat, packname, dev, bye, img2, img2, channel, fkontak);
   }
 }
