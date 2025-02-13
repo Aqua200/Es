@@ -1,177 +1,200 @@
-import { watchFile, unwatchFile } from 'fs'
+import { watchFile, unwatchFile } from 'fs' 
 import chalk from 'chalk'
 import { fileURLToPath } from 'url'
 import fs from 'fs'
-import * as cheerio from 'cheerio'  // Corregido
+import cheerio from 'cheerio'
 import fetch from 'node-fetch'
 import axios from 'axios'
 import moment from 'moment-timezone' 
 
-//*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─⋯
-
-global.botNumberCode = '' //Ejemplo +5216671548328
-global.confirmCode = ''
-
-//*─ׄ─⋯
+//---------[ Añada los numeros a ser Propietario/a ]---------
 
 global.owner = [
-  ['5216631079388', 'Neykoor', true],
-];
+['5216631079388', '𝕮𝖍𝖎𝖓𝖆 𝕸𝖎𝖙𝖟𝖚𝖐𝖎 - 𝕯𝖚𝖊𝖓̃𝖆 💋', true],
+['', '', true],
+[''],
+[''],
+[''],
+[''],
+[''], 
+[''],
+['']]
+global.mods = []
+global.prems = []
 
-//*─ׄ─⋯
+//BETA: Si quiere evitar escribir el número que será bot en la consola, agregué desde aquí entonces:
+//Sólo aplica para opción 2 (ser bot con código de texto de 8 digitos)
+global.botNumberCode = "" //Ejemplo: +59309090909
+global.confirmCode = "" 
 
-global.mods = ['5216677510398'], 
-global.suittag = ['']
-global.prems = ['5216671548329'], 
+//cambia a false Desactivar en "auto-reconexion" de sub-bots
+global.gataJadibts = true 
 
-//*─ׄ─⋯
+// Cambiar a false para usar el Bot desde el mismo numero del Bot.
+global.isBaileysFail = false
 
-global.libreria = 'Baileys'
-global.baileys = 'V 6.7.9' 
-global.languaje = 'Español'
-global.vs = '2.1.5'
-global.vsJB = '5.0'
-global.nameqr = 'Sagiri - Izumi - Bot'
-global.namebot = '✿◟Sagiri-izumi◞✿'
-global.sessions = 'Sessions'
-global.jadi = 'JadiBots' 
-global.yukiJadibts = true
+//---------[ APIS GLOBAL ]---------
 
-//*─ׄ─⋯
+global.openai_key = 'sk-...OzYy' /* Consigue tu ApiKey en este enlace: https://platform.openai.com/account/api-keys */
+global.openai_org_id = 'HITjoN7H8pCwoncEB9e3fSyW' /* Consigue tu ID de organizacion en este enlace: https://platform.openai.com/account/org-settings */
+global.Key360 = ['964f-0c75-7afc']//key de violetics
+global.keysZens = ['LuOlangNgentot', 'c2459db922', '37CC845916', '6fb0eff124', 'hdiiofficial', 'fiktod', 'BF39D349845E', '675e34de8a', '0b917b905e6f']
+global.keysxxx = keysZens[Math.floor(keysZens.length * Math.random())]
+global.keysxteammm = ['29d4b59a4aa687ca', '5LTV57azwaid7dXfz5fzJu', 'cb15ed422c71a2fb', '5bd33b276d41d6b4', 'HIRO', 'kurrxd09', 'ebb6251cc00f9c63']
+global.keysxteam = keysxteammm[Math.floor(keysxteammm.length * Math.random())]
+global.keysneoxrrr = ['5VC9rvNx', 'cfALv5']
+global.keysneoxr = keysneoxrrr[Math.floor(keysneoxrrr.length * Math.random())]
+global.lolkeysapi = "GataDiosV2"
+global.itsrose = ['4b146102c4d500809da9d1ff']
+global.baileys = '@whiskeysockets/baileys'
+global.apis = 'https://delirius-apiofc.vercel.app'
 
-global.packsticker =`°.⎯⃘̶⎯̸⎯ܴ⎯̶᳞͇ࠝ⎯⃘̶⎯̸⎯ܴ⎯̶᳞͇ࠝ⎯⃘̶⎯̸.°\n✦ Bot:\n✦ Propietario:\n✦Fecha de Creacion:\n✦ Hora de creación:\n♾━━━━━━━━`
-global.packsticker2 = `━━━━━━━━♾\n⪛✰ sᥲgіrі - mіzᥙkі ✰⪜\nLegna\n⇝ ${moment.tz('America/Los_Angeles').format('DD/MM/YY')}\n⇝ ${moment.tz('America/Los_Angeles').format('HH:mm:ss')} \n°.⎯⃘̶⎯̸⎯ܴ⎯̶᳞͇ࠝ⎯⃘̶⎯̸⎯ܴ⎯̶᳞͇ࠝ⎯⃘̶⎯̸.°\n\nStickers By : Legna`
-
-//*─ׄ─⋯
-
-global.packname = 'Sagiri Izumi'
-global.botname = 'Sagiri Izumi'
-global.wm = 'Sagiri Izumi'
-global.author = 'Made By Legna'
-global.dev = 'Powered By Legna'
-global.textbot = '❀ sᥲgіrі іzᥙmі ᑲᥡ : ᥣᥱgᥒᥲ ❀'
-global.numcreador = '5216671548329'
-global.moneda = 'SagiriCoins'
-global.banner = 'https://files.catbox.moe/l3edoq.jpg'
-global.catalogo = 'https://files.catbox.moe/gizmm4.jpg'
-global.test = 'https://qu.ax/zppMw.jpg'
-
-//*─ׄ─⋯
-
-global.imagen1 = fs.readFileSync('./src/menus/Menu2.jpg');
-global.imagen2 = fs.readFileSync('./src/anime.jpg');
-global.imagen3 = fs.readFileSync('./src/menus/Menu3.jpg');
-global.imagen4 = fs.readFileSync('./src/menus/Menu.jpg');
-global.imagen5 = fs.readFileSync('./src/+18.jpg');
-global.imagen6 = fs.readFileSync('./src/menus/Menu3.jpg');
-global.imagen7 = fs.readFileSync('./src/menus/Menu5.jpg');
-global.imagen8 = fs.readFileSync('./src/menus/Menu4.jpg')
-global.imagen9 = fs.readFileSync('./src/menu_en.png')
-global.imagen10 = fs.readFileSync('./src/nuevobot.jpg');
-global.miniurl = fs.readFileSync('./src/Grupo.jpg');
-global.logo2 = fs.readFileSync('./src/logo2.jpg')
-global.logo3 = fs.readFileSync('./src/logo3.jpg')
-global.catalogo = fs.readFileSync('./src/logo6.png')
-global.logo4 = fs.readFileSync('./src/logo4.jpg')
-global.logo5 = fs.readFileSync('./src/logo5.jpg')
-global.logo7 = fs.readFileSync('./src/Logo7.png')
-global.logo8 = fs.readFileSync('./src/Logo8.jpg')
-global.rule = fs.readFileSync('./src/rule.jpg')
-
-global.photoSity = [imagen8, imagen1, imagen4, imagen6]
-
-//*─ׄ─⋯
-
-global.gp4 = 'https://chat.whatsapp.com/Ecz881bBgqPIWjDOaKkp7E'
-global.gp1 = 'https://chat.whatsapp.com/D8U3fQB1oLj3TzqwhRmzAD' 
-global.gp2 = 'https://chat.whatsapp.com/D8U3fQB1oLj3TzqwhRmzAD'
-global.comunidad1 = 'https://chat.whatsapp.com/EBwwYcU2AzC1vqVhVUgJ3o'
-global.channel = 'https://whatsapp.com/channel/0029Vb3yy64LI8YSrvdyq00R'
-global.channel2 = 'https://whatsapp.com/channel/0029VavzewJLikg78gILRn1o'
-global.md = 'https://github.com/Legna-chan/SagiriBot-MD'
-global.correo = 'legnakujou@gmail.com'
-global.cn ='https://whatsapp.com/channel/0029VapSIvR5EjxsD1B7hU3T';
-
-//*─ׄ─⋯
-
-global.estilo = { key: {  fromMe: false, participant: `0@s.whatsapp.net`, ...(false ? { remoteJid: "5219992095479-1625305606@g.us" } : {}) }, message: { orderMessage: { itemCount : -999999, status: 1, surface : 1, message: '❀ sᥲgіrі іzᥙmі ☄︎︎', orderTitle: 'Bang', thumbnail: catalogo, sellerJid: '0@s.whatsapp.net'}}}
-
-//*─ׄ─⋯
-
-global.ch = {
-ch1: '120363390725729031@newsletter',
-ch2: '120363390725729031@newsletter',
-}
-
-//*─ׄ─⋯
+global.APIs = {xteam: 'https://api.xteam.xyz', 
+dzx: 'https://api.dhamzxploit.my.id',
+lol: 'https://api.lolhuman.xyz',
+violetics: 'https://violetics.pw',
+neoxr: 'https://api.neoxr.my.id',
+zenzapis: 'https://api.zahwazein.xyz',
+akuari: 'https://api.akuari.my.id',
+akuari2: 'https://apimu.my.id',	
+fgmods: 'https://api-fgmods.ddns.net',
+botcahx: 'https://api.botcahx.biz.id',
+ibeng: 'https://api.ibeng.tech/docs',	
+rose: 'https://api.itsrose.site',
+popcat : 'https://api.popcat.xyz',
+xcoders : 'https://api-xcoders.site' },
+global.APIKeys = {'https://api.xteam.xyz': `${keysxteam}`,
+'https://api.lolhuman.xyz': `${lolkeysapi}`,
+'https://api.neoxr.my.id': `${keysneoxr}`,	
+'https://violetics.pw': 'beta',
+'https://api.zahwazein.xyz': `${keysxxx}`,
+'https://api-fgmods.ddns.net': 'fg-dylux',
+'https://api.botcahx.biz.id': 'Admin',
+'https://api.ibeng.tech/docs': 'tamvan',
+'https://api.itsrose.site': 'Rs-Zeltoria',
+'https://api-xcoders.site': 'Frieren' }
 
 global.cheerio = cheerio
 global.fs = fs
 global.fetch = fetch
 global.axios = axios
-global.moment = moment   
+global.moment = moment	
 
-global.rpg = {
-  emoticon(string) {
-    string = string.toLowerCase();
-    const emot = {
-      level: '🌟 Nivel',
-      coin: '💸 Coin',
-      exp: '✨ Experiencia',
-      bank: '🏦 Banco',
-      diamond: '💎 Diamante',
-      health: '❤️ Salud',
-      kyubi: '🌀 Magia',
-      joincount: '💰 Token',
-      emerald: '♦️ Esmeralda',
-      stamina: '⚡ Energía',
-      role: '⚜️ Rango',
-      premium: '🎟️ Premium',
-      pointxp: '📧 Puntos Exp',
-      gold: '👑 Oro',
-      iron: '⛓️ Hierro',
-      coal: '🌑 Carbón',
-      stone: '🪨 Piedra',
-      potion: '🥤 Poción',
-    };
-    const results = Object.keys(emot).map((v) => [v, new RegExp(v, 'gi')]).filter((v) => v[1].test(string));
-    if (!results.length) return '';
-    else return emot[results[0][0]];
-  }};
-global.rpgg = { 
-  emoticon(string) {
-    string = string.toLowerCase();
-    const emott = {
-      level: '🌟',
-      coin: '💸',
-      exp: '✨',
-      bank: '🏦',
-      diamond: '💎',
-      health: '❤️',
-      kyubi: '🌀',
-      joincount: '💰',
-      emerald: '♦️',
-      stamina: '⚡',
-      role: '⚜️',
-      premium: '🎟️',
-      pointxp: '📧',
-      gold: '👑',
-      iron: '⛓️',
-      coal: '🌑',
-      stone: '🪨',
-      potion: '🥤',
-    };
-    const results = Object.keys(emott).map((v) => [v, new RegExp(v, 'gi')]).filter((v) => v[1].test(string));
-    if (!results.length) return '';
-    else return emott[results[0][0]];
-  }};  
+//------------------------[ Stickers ]-----------------------------
 
-//*─ׄ─⋯
+global.packname = '𝕮𝖍𝖎𝖓𝖆 𝕸𝖎𝖙𝖟𝖚𝖐𝖎 💋'
+global.author = 'elrebelde21'
 
-global.multiplier = 69
-global.maxwarn = '3'
+//------------------------[ Contacto ]-----------------------------
 
-//*─ׄ─⋯
+global.official = [ // Agregate si eres Owner
+["5216631079388", '𝕮𝖍𝖎𝖓𝖆 𝕸𝖎𝖙𝖟𝖚𝖐𝖎 - 𝕯𝖚𝖊𝖓̃𝖆 💋', 1], 
+["5216631079388", '𝕮𝖍𝖎𝖓𝖆 𝕸𝖎𝖙𝖟𝖚𝖐𝖎 - 𝕺𝖜𝖓𝖊𝖗 💋', 1]]
+
+global.mail = '' // Add email
+global.desc = '' // Add short description (20 caractres max)
+global.desc2 = '' // Add long description (90 caractres max) (Este parámetro se aplicará sólo si su whasapp no tiene descripción)
+global.country = '' // Add country, example: 🇪🇨
+
+//------------[ Versión | Nombre | cuentas ]------------
+
+global.wm = '𝕮𝖍𝖎𝖓𝖆 𝕸𝖎𝖙𝖟𝖚𝖐𝖎 💋' 
+global.botname = '𝕮𝖍𝖎𝖓𝖆 𝕸𝖎𝖙𝖟𝖚𝖐𝖎 💋'
+global.vs = '1.0.0 (personalizado)'
+global.yt = 'https://www.youtube.com/@elrebelde.21'
+global.tiktok = 'https://www.tiktok.com/@elrebelde.21'
+global.md = 'https://github.com/elrebelde21/ChinaMitzuki'
+global.ig = 'https://www.instagram.com/mitzuki_chinita'
+global.fb = 'https://www.facebook.com/elrebelde21'
+global.face = 'https://www.facebook.com/groups/872989990425789/'
+
+global.nna = 'https://whatsapp.com/channel/0029Va4QjH7DeON0ePwzjS1A' //Update
+global.nna2 = 'https://whatsapp.com/channel/0029Vau57ykEwEk5CgosvU3v' //LoliBot update
+global.nnaa = 'https://whatsapp.com/channel/0029Vae6j714Y9loutP3Au29' //LoliBot - Test
+global.nn = 'https://chat.whatsapp.com/HNDVUxHphPzG3cJHIwCaX5' //Grupo 1
+global.nnn = 'https://chat.whatsapp.com/KDBt6S54riRCIpSZspkxhg' //Grupo 2
+global.nnnt = 'https://chat.whatsapp.com/IO5k0UOF7hOJHE1eH3Fcxh' //Grupo del Colaboracion
+global.nnnt2 = 'https://chat.whatsapp.com/K7RzcVdxGqhGP5dCpVENSI' // Grupo COL 2
+global.nnntt = 'https://chat.whatsapp.com/IB9Vs7mZ03BBkH3reCU8Dw' //Grupo COL 3
+global.nnnttt = 'https://chat.whatsapp.com/GKJ7UpMsLXaDYcl9PovsJL' //enlace lolibot
+global.nnntttt = 'https://chat.whatsapp.com/FRkr7jJHSJA5OjVtE64dDs' //Grupo ayuda sobre el bot
+global.bot = 'wa.me/573007487856'
+global.asistencia = `${fb}`
+global.redes = [nna, nna2, yt, nn, md, tiktok, fb, nnn, face]
+
+//------------------------[ Info | Datos ]---------------------------
+
+global.wait = 'Calmao bb estoy procesando😎\n\n> *❗Por favor no hacer spam👏❗*'
+global.waitt = '*⌛ _Cargando..._ ▬▬▭▭▭*'
+global.waittt = '*⌛ _Cargando..._ ▬▬▬▬▭▭*'
+global.waitttt = '*⌛ _Cargando..._ ▬▬▬▬▬▬▭*'
+global.waittttt = '*⌛ _Cargando..._ ▬▬▬▬▬▬▬*'
+global.rg = '『✅ 𝙍𝙀𝙎𝙐𝙇𝙏𝘼𝘿𝙊𝙎 ✅』\n\n'
+global.resultado = rg
+global.ag = '『⚠️ 𝘼𝘿𝙑𝙀𝙍𝙏𝙀𝙉𝘾𝙄𝘼 ⚠️』\n\n'
+global.advertencia = ag
+global.iig = '『❕ 𝙄𝙉𝙁𝙊𝙍𝙈𝘼𝘾𝙄𝙊𝙉 』\n\n'
+global.informacion = iig
+global.fg = '『❌ 𝙀𝙍𝙍𝙊𝙍 ❌』\n\n'
+global.fallo = fg
+global.mg = '『❗️ 𝙇𝙊 𝙐𝙎𝙊 𝙈𝘼𝙇❗』\n\n'
+global.mal = mg
+global.eeg = '『📩 𝙍𝙀𝙋𝙊𝙍𝙏𝙀 📩』\n\n'
+global.envio = eeg
+global.eg = '『💚 𝙀𝙓𝙄𝙏𝙊𝙎 💚』\n\n'
+global.exito = eg
+
+//-------------------------[ IMAGEN ]------------------------------
+//global.img = "https://qu.ax/Zgqq.jpg"
+global.img1 = 'https://qu.ax/PMcnV.jpg'
+global.img2 = 'https://qu.ax/PMcnV.jpg'
+
+global.imagen = fs.readFileSync('./Menu2.jpg')
+global.imagen1 = fs.readFileSync('./media/Menu1.jpg')
+global.imagen2 = fs.readFileSync('./media/Menu2.jpg')
+global.imagen3 = fs.readFileSync('./media/Menu3.jpg')
+global.imagen4 = fs.readFileSync('./media/Menu4.jpg')
+global.imagen5 = 'https://qu.ax/PMcnV.jpg'
+global.imagen6 = 'https://qu.ax/PMcnV.jpg'
+global.menu18 = 'https://qu.ax/PMcnV.jpg'
+global.vid1 = 'https://qu.ax/dcAc.mp4'
+global.img = [imagen, imagen1, imagen2, imagen3, imagen4]
+global.imageUrl = ["https://qu.ax/HJnWj.jpg", "https://qu.ax/ehPzQ.jpg", "https://qu.ax/ilfbC.jpg"]
+
+//----------------------------[ NIVELES | RPG ]---------------------------------
+
+global.multiplier = 350 // Cuanto más alto, más difícil subir de nivel
+global.maxwarn = '4' // máxima advertencias
+
+//━━━━━━━━━━━━━━━━━━━━ ฅ^•ﻌ•^ฅ
+
+global.rwait = '⌛'
+global.dmoji = '🤭'
+global.done = '✅'
+global.error = '❌' 
+global.xmoji = '🔥' 
+
+//━━━━━━━━━━━━━━━━━━━━ ฅ^•ﻌ•^ฅ
+
+global.flaaa = [
+'https://flamingtext.com/net-fu/proxy_form.cgi?&imageoutput=true&script=water-logo&script=water-logo&fontsize=90&doScale=true&scaleWidth=800&scaleHeight=500&fontsize=100&fillTextColor=%23000&shadowGlowColor=%23000&backgroundColor=%23000&text=',
+'https://flamingtext.com/net-fu/proxy_form.cgi?&imageoutput=true&script=crafts-logo&fontsize=90&doScale=true&scaleWidth=800&scaleHeight=500&text=',
+'https://flamingtext.com/net-fu/proxy_form.cgi?&imageoutput=true&script=amped-logo&doScale=true&scaleWidth=800&scaleHeight=500&text=',
+'https://www6.flamingtext.com/net-fu/proxy_form.cgi?&imageoutput=true&script=sketch-name&doScale=true&scaleWidth=800&scaleHeight=500&fontsize=100&fillTextType=1&fillTextPattern=Warning!&text=',
+'https://www6.flamingtext.com/net-fu/proxy_form.cgi?&imageoutput=true&script=sketch-name&doScale=true&scaleWidth=800&scaleHeight=500&fontsize=100&fillTextType=1&fillTextPattern=Warning!&fillColor1Color=%23f2aa4c&fillColor2Color=%23f2aa4c&fillColor3Color=%23f2aa4c&fillColor4Color=%23f2aa4c&fillColor5Color=%23f2aa4c&fillColor6Color=%23f2aa4c&fillColor7Color=%23f2aa4c&fillColor8Color=%23f2aa4c&fillColor9Color=%23f2aa4c&fillColor10Color=%23f2aa4c&fillOutlineColor=%23f2aa4c&fillOutline2Color=%23f2aa4c&backgroundColor=%23101820&text=']
+
+//---------------[ IDs de canales ]----------------
+
+global.ch = {
+ch1: '120363390725729031@newsletter', 
+ch2: '120363390725729031@newsletter', 
+ch3: '120363390725729031@newsletter',
+ch4: '120363390725729031@newsletter',
+ch5: '120363390725729031@newsletter',
+ch6: '120363390725729031@newsletter',
+}
+
+//----------------------------------------------------
 
 let file = fileURLToPath(import.meta.url)
 watchFile(file, () => {
