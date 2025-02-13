@@ -3,24 +3,24 @@ import fetch from 'node-fetch'
 
 export async function before(m, {conn, participants, groupMetadata}) {
   if (!m.messageStubType || !m.isGroup) return !0;
+  let img = imagen1
+  let chat = global.db.data.chats[m.chat]
 
-  // Imagen fija a usar
-  const img = await (await fetch('https://i.ibb.co/2jKKcrs/file.jpg')).buffer();
-  let chat = global.db.data.chats[m.chat];
-
-  if (chat.bienvenida && m.messageStubType == 27) {
-    let bienvenida = `┌─★ *Sumi Sakurasawa* \n│「 Bienvenido 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Bienvenido a\n   │✑  ${groupMetadata.subject}\n   └───────────────┈ ⳹`;
-    
-    await conn.sendAi(m.chat, botname, textbot, bienvenida, img, img, canal);
+  if (chat.welcome && m.messageStubType == 27) {
+    let welcome = ` 「✿」Sagiri - MD \n「 Bienvenido :3 」\n「 @${m.messageStubParameters[0].split`@`[0]} 」\n「 Bienvenido/a 」\n「 ${groupMetadata.subject} 」\n\n> ✐ Usa *#ayuda* para ver mi menu.
+> 🜸 `
+await conn.sendMini(m.chat, packname, textbot, welcome, img, img, redes, fkontak)
   }
 
-  if (chat.bienvenida && m.messageStubType == 28) {
-    let bye = `┌─★ *Sumi Sakurasawa* \n│「 ADIOS 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`;
-    await conn.sendAi(m.chat, botname, textbot, bye, img, img, canal);
+  if (chat.welcome && m.messageStubType == 28) {
+    let bye = ` 「✿」Sagiri - MD \n「 Adios 」\n「 @${m.messageStubParameters[0].split`@`[0]} 」\n「 Se fue 」\n「 Vuelve pronto :3 」\n\n> ✐ Usa *#ayuda* para ver menu.
+> 🜸 `
+await conn.sendMini(m.chat, packname, textbot, bye, img, img, redes, fkontak)
   }
 
-  if (chat.bienvenida && m.messageStubType == 32) {
-    let kick = `┌─★ *Sumi Sakurasawa* \n│「 ADIOS 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`;
-    await conn.sendAi(m.chat, botname, textbot, kick, img, img, canal);
-  }
-}
+  if (chat.welcome && m.messageStubType == 32) {
+    let kick = `「✿」Sagiri - MD \n「 Adios 」\n「 @${m.messageStubParameters[0].split`@`[0]} 」\n「 Se fue 」\n「 Vuelve pronto :3」\n\n> ✐ Usa *#ayuda* para ver mi menu. 
+> 🜸 `  
+await conn.sendMini(m.chat, packname, textbot, kick, img, img, redes, fkontak)
+await conn.sendMessage(m.chat, { image: img, caption: bye, mentions: [who] })
+}}
