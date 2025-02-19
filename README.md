@@ -27,6 +27,12 @@ npm install
 ```bash
 npm start
 ```
+
+```bash
+git stash
+
+```
+
 ```bash
 git pull
 ```
