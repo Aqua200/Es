@@ -28,6 +28,8 @@ npm install
 npm start
 ```
 
+actualizar en termux 
+
 ```bash
 git stash
 
